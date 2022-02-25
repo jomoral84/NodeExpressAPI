@@ -1,8 +1,23 @@
 const express = require('express');
 const app = express();
 const fs = require('fs');
+const morgan = require('morgan');
+
+// MIDDLEWARES
 
 app.use(express.json()); // Middleware
+app.use(morgan('dev'));
+
+app.use((req, res, next) => { // Se define un middleware global antes de los route handlers
+    console.log("Hola desde el middleware");
+    next();
+})
+
+
+app.use((req, res, next) => { // Se define un middleware para saber el horario del request
+    req.requestTime = new Date().toISOString();
+    next();
+})
 
 // app.get('/', (req, res) => {
 //     res
@@ -23,10 +38,15 @@ const users = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/users.json`
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
 
 
+// ROUTE HANDLERS
+
+
 const getAllTours = (req, res) => {
 
+    console.log(req.requestTime);
     res.status(200).json({
         status: 'success',
+        time: req.requestTime,
         data: {
             tours
         }
