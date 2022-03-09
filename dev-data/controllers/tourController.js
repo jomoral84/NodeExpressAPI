@@ -3,6 +3,7 @@ const fs = require('fs');
 const tours = JSON.parse(
     fs.readFileSync(require('path').resolve('dev-data/data/tours-simple.json')));
 
+
 // TOURS ROUTE HANDLERS
 
 exports.checkID = (req, res, next, val) => {
@@ -17,7 +18,7 @@ exports.checkID = (req, res, next, val) => {
     next();
 };
 
-exports.checkBody = (req, res, next) => {
+exports.checkBody = (req, res, next) => { // Middleware que chequea si el body contiene la propiedad nombre y precio
     if (!req.body.name || !req.body.price) {
         return res.status(400).json({
             status: 'fail',

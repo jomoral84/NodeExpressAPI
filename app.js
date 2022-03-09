@@ -12,6 +12,7 @@ const app = express();
 
 app.use(express.json()); // Middleware
 app.use(morgan('dev'));
+app.use(express.static(`${__dirname}/public/`)); // Permite acceder al html overview y tour
 
 
 app.use((req, res, next) => { // Se define un middleware global antes de los route handlers
