@@ -21,24 +21,23 @@ mongoose.connect(DB, { // Conexion a la base de MongoDB
     console.log(err);
 });
 
-const tourSchema = new mongoose.Schema({ // Esquema basico de mongoose
-    name: {
-        type: String,
-        required: [true, "Debe tener un nombre"], // Valida los datos
-        unique: true
-    },
-    price: {
-        type: Number,
-        required: [true, "Debe tener un precio"]
-    },
-    rating: {
-        type: Number,
-        default: 4.5
-    }
-})
+
+/*
+const testTour = new Tour({
+
+    name: 'Palacio Barolo',
+    price: 500,
+    rating: 4.0
+});
+
+testTour.save().then(doc => { // Guarda el docuemento en la nube
+    console.log(doc);
+
+}).catch(err => {
+    console.log("ERROR", err);
+})    */
 
 
-const Tour = mongoose.model('Tour', tourSchema);
 
 
 
