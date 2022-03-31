@@ -1,8 +1,8 @@
 const Tour = require('../models/tourModel');
 
-/*
-const tours = JSON.parse(
-    fs.readFileSync(require('path').resolve('dev-data/data/tours-simple.json')));  */
+
+//     const tours = JSON.parse(
+//     fs.readFileSync(require('path').resolve('dev-data/data/tours-simple.json')));  
 
 
 // TOURS ROUTE HANDLERS
@@ -33,7 +33,30 @@ exports.getAllTours = async(req, res) => {
 
     try {
 
-        const tours = await Tour.find();
+        // 1) Filtrado
+        const queryObj = req.query;
+        const excludeFields = ['page', 'sort'];
+        excludeFields.forEach(el => delete queryObj[el]);
+        console.log(req.query);
+
+
+        const queryStr = JSON.stringify(queryObj)
+        let query = Tour.find(JSON.parse(queryStr)).sort('price');
+
+
+        // 2) Ordenar por precio
+        if (req.query.sort) {
+            const sortBy = req.query.sort.split(',').join(' ');
+            query = query.sort(sortBy);
+        }
+
+        const tours = await query;
+
+        // const tours = await Tour.find({ // Condicion de busqueda 1
+        //     duration: 5,
+        //     difficulty: 'easy'
+
+        // });
 
         res.status(200).json({
             status: 'success',
@@ -92,7 +115,7 @@ exports.createTour = async(req, res) => {
     } catch (err) {
         res.status(400).json({
             status: 'fail',
-            message: 'Error de Envio'
+            message: err
         });
     }
 };
@@ -147,6 +170,4 @@ exports.deleteTour = async(req, res) => {
             message: err
         });
     }
-
-
 };
