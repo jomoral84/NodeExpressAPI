@@ -35,20 +35,43 @@ exports.getAllTours = async(req, res) => {
 
         // 1) Filtrado
         const queryObj = req.query;
-        const excludeFields = ['page', 'sort'];
+        const excludeFields = ['page', 'sort', 'limit', 'fields'];
         excludeFields.forEach(el => delete queryObj[el]);
         console.log(req.query);
 
 
         const queryStr = JSON.stringify(queryObj)
-        let query = Tour.find(JSON.parse(queryStr)).sort('price');
+        let query = Tour.find(JSON.parse(queryStr));
 
 
         // 2) Ordenar por precio
         if (req.query.sort) {
             const sortBy = req.query.sort.split(',').join(' ');
             query = query.sort(sortBy);
+        } else {
+            query = query.sort('-name');
         }
+
+
+        // 3) Limitar fields
+        if (req.query.fields) {
+            const fields = req.query.fields.split(',').join(' ');
+            query = query.select(fields);
+        } else {
+            query = query.select('-__v');
+        }
+
+
+        // 4) Paginacion: 
+        const page = req.query.page * 1 || 1;
+        const limit = req.query.limit * 1 || 100;
+        const skip = (page - 1) * limit;
+
+        query = query.skip(skip).limit(limit);
+
+
+
+        // Ejecuta Query
 
         const tours = await query;
 
