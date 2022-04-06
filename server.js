@@ -14,7 +14,7 @@ mongoose.connect(DB, { // Conexion a la base de MongoDB
     useUnifiedTopology: true
 
 }).then(() => {
-    console.log('Conectado a la base de la nube!');
+    console.log('Conectado a la base de MongoDB Atlas!');
 
 }).catch((err) => {
     console.log(err);
