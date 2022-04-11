@@ -163,3 +163,38 @@ exports.deleteTour = async(req, res) => {
         });
     }
 };
+
+
+exports.getTourStats = async(req, res) => {
+    try {
+        const stats = await Tour.aggregate([ // Aggregation match: Filters the document stream to allow only matching documents to pass unmodified into the next pipeline stage. $match uses standard MongoDB queries.
+            {
+                $match: { ratingsAverage: { $gte: 4.5 } }
+
+            },
+            {
+                $group: {
+                    _id: null,
+                    avgRating: { $avg: '$ratingsAverage' },
+                    avgPrice: { $avg: '$price' },
+                    minPrice: { $avg: '$price' },
+                    maxPrice: { $avg: '$price' },
+                }
+            }
+        ]);
+
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                stats
+            }
+        });
+
+    } catch (err) {
+        res.status(400).json({
+            status: 'fail',
+            message: err
+        });
+    }
+}
