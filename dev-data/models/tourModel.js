@@ -64,6 +64,8 @@ const tourSchema = new mongoose.Schema({ // Esquema basico de mongoose
 
 
 
+
+
 })
 
 
