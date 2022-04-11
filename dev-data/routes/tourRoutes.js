@@ -22,6 +22,8 @@ router
 
 router
     .route('/tour-stats').get(tourController.getTourStats);
+router
+    .route('/getplan/:year').get(tourController.getPlan);
 
 router
     .route('/:id')
