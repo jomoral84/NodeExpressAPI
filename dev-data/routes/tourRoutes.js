@@ -21,9 +21,9 @@ router
     .route('/top-5-cheap').get(tourController.aliasTopTours, tourController.getAllTours);
 
 router
-    .route('/tour-stats').get(tourController.getTourStats);
+    .route('/tour-stats').get(tourController.getTourStats); // STATS
 router
-    .route('/getplan/:year').get(tourController.getPlan);
+    .route('/getplan/:year').get(tourController.getPlan); // PLANES POR AÑO
 
 router
     .route('/:id')
