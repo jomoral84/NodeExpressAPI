@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 
-const tourSchema = new mongoose.Schema({ // Esquema basico de mongoose
+const tourSchema = new mongoose.Schema({ // Esquema de mongoose
     name: {
         type: String,
-        required: [true, "Debe tener un nombre"], // Valida los datos
+        required: [true, "Debe tener un nombre"], // Validador de los datos
         unique: true,
-        trim: true
+        trim: true,
+        maxlength: [40, "El tour no debe superar los 40 caracteres"], // Validador de largo
+        minlength: [5, "El tour debe tener mas de 5 caracteres"]
     },
 
     slug: String,
@@ -23,7 +25,11 @@ const tourSchema = new mongoose.Schema({ // Esquema basico de mongoose
 
     difficulty: {
         type: String,
-        required: [true, "El tour debe tener una dificultad"]
+        required: [true, "El tour debe tener una dificultad"],
+        enum: {
+            values: ['easy', 'medium', 'difficult'], // Valida la dificultad
+            message: 'La dificultad debe ser: easy, medium, difficult'
+        }
     },
 
 
@@ -47,7 +53,9 @@ const tourSchema = new mongoose.Schema({ // Esquema basico de mongoose
 
     ratingsAverage: {
         type: Number,
-        default: 4.5
+        default: 4.5,
+        min: [1, 'Debe ser mayor a 1.0'],
+        max: [5, 'Debe ser menor a 5']
     },
 
     ratingQuantity: {
@@ -94,3 +102,10 @@ tourSchema.pre('find', function() {
 const Tour = mongoose.model('Tour', tourSchema);
 
 module.exports = Tour;
+
+
+// Agregation Middleware
+
+tourSchema.pre('aggregate', function() {
+    this.pipeline().unshift({ $match: { secretTour: { $ne: true } } })
+})
