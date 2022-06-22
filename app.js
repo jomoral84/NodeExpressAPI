@@ -1,8 +1,11 @@
 const express = require('express');
 const morgan = require('morgan');
+const errorController = require('./dev-data/controllers/errorController');
 
 const tourRouter = require('./dev-data/routes/tourRoutes');
 const userRouter = require('./dev-data/routes/userRoutes');
+const AppError = require('./dev-data/utils/appError');
+const globalErrorHandler = require('./dev-data/controllers/errorController')
 
 const app = express();
 
@@ -37,11 +40,20 @@ app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
 app.all('*', (req, res, next) => { // Middleware que maneja el error de ruta
-    res.status(404).json({
-        status: 'fail',
-        message: `No se puede encontrar la pagina: ${req.originalUrl}`
-    })
+
+    // const err = new Error(`No se puede encontrar la pagina: ${req.originalUrl}`)
+    // err.status = 'fail';
+    // err.statusCode = 404;
+
+    next(new AppError(`No se puede encontrar la pagina: ${req.originalUrl}`, 404));
+
+
+
+
 });
+
+
+app.use(globalErrorHandler);
 
 
 module.exports = app;
