@@ -21,24 +21,6 @@ mongoose.connect(DB, { // Conexion a la base de MongoDB
 });
 
 
-/*
-const testTour = new Tour({
-
-    name: 'Palacio Barolo',
-    price: 500,
-    rating: 4.0
-});
-
-testTour.save().then(doc => { // Guarda el docuemento en la nube
-    console.log(doc);
-
-}).catch(err => {
-    console.log("ERROR", err);
-})    */
-
-
-
-
 
 // START SERVER
 
