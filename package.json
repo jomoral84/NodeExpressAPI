@@ -10,7 +10,8 @@
         "express": "^4.17.2",
         "mongoose": "^6.2.6",
         "morgan": "^1.10.0",
-        "nodemon": "^2.0.16",
+        "nodemon": "^2.0.18",
+        "pug": "^3.0.2",
         "slugify": "^1.6.5",
         "validator": "^13.7.0"
     },

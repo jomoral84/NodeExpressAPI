@@ -1,0 +1,27 @@
+doctype html
+html 
+  head 
+    title Natours
+    link(rel='stylesheet' href='/css/style.css')
+    link(rel='shortcut icon' type='image/png' href='/img/favicon.png')
+    link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lato:300,300i,700')
+
+  body 
+        
+    header.header
+        nav.nav.nav--tours
+                a.nav__el(href='#') Todos los tours
+        .header__logo 
+                img(src='/img/logo-white.png' alt='Logo')
+        nav.nav.nav--user
+              button.nav__el Log In 
+              button.nav__el.nav__el--cta Sign In
+
+ 
+    section.overview
+        h1= tour
+
+
+    footer.footer
+      .footer__logo
+         img(src='/img/logo-green.png' alt='Logo')
