@@ -60,10 +60,6 @@ app.all('*', (req, res, next) => { // Middleware que maneja el error de ruta
     // err.statusCode = 404;
 
     next(new AppError(`No se puede encontrar la pagina: ${req.originalUrl}`, 404));
-
-
-
-
 });
 
 
