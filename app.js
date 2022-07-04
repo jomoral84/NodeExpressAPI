@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const errorController = require('./dev-data/controllers/errorController');
@@ -10,6 +11,10 @@ const globalErrorHandler = require('./dev-data/controllers/errorController')
 const app = express();
 
 
+app.set('view engine', 'pug'); // Motor de plantillas usado: PUG
+app.set('views', path.join(__dirname, 'views'));
+
+
 
 // MIDDLEWARES
 
@@ -19,6 +24,7 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use(express.json()); // Middleware
 app.use(express.static(`${__dirname}/public/`)); // Permite acceder al html overview y tour
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 // app.use((req, res, next) => { // Se define un middleware global antes de los route handlers
@@ -35,6 +41,14 @@ app.use((req, res, next) => { // Se define un middleware para saber el horario d
 
 
 // ROUTERS
+
+app.get('/api/v1/pruebapug', (req, res) => { // Prueba template PUG
+    res.status(200).render('base', {
+        tour: 'Las minas de San Ignacio',
+        user: 'Beto',
+        price: 200
+    });
+})
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
