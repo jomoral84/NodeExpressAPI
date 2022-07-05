@@ -1,19 +1,20 @@
 doctype html
 html 
   head 
-    title Natours
+    
     link(rel='stylesheet' href='/css/style.css')
     link(rel='shortcut icon' type='image/png' href='/img/favicon.png')
     link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lato:300,300i,700')
+    title Natours - #{title}
 
   body 
 
     include _header
+ 
+    // Pug supports template inheritance. Template inheritance works via the block and extends keywords. 
 
-    section.overview
-      h1= tour
+    block content      
+      h1 Este es un placeholder
+      h2 Comentario random
 
-
-    footer.footer
-      .footer__logo
-        img(src='/img/logo-green.png' alt='Logo')
+    include _footer
