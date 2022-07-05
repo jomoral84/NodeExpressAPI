@@ -5,8 +5,10 @@ const errorController = require('./dev-data/controllers/errorController');
 
 const tourRouter = require('./dev-data/routes/tourRoutes');
 const userRouter = require('./dev-data/routes/userRoutes');
+const viewRouter = require('./dev-data/routes/viewRoutes')
 const AppError = require('./dev-data/utils/appError');
-const globalErrorHandler = require('./dev-data/controllers/errorController')
+const globalErrorHandler = require('./dev-data/controllers/errorController');
+
 
 const app = express();
 
@@ -42,14 +44,8 @@ app.use((req, res, next) => { // Se define un middleware para saber el horario d
 
 // ROUTERS
 
-app.get('/api/v1/pruebapug', (req, res) => { // Prueba template PUG
-    res.status(200).render('base', {
-        tour: 'Las minas de San Ignacio',
-        user: 'Beto',
-        price: 200
-    });
-})
 
+app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
