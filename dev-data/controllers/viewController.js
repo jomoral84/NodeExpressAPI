@@ -1,8 +1,8 @@
 const Tour = require('../models/tourModel');
-const APIFeatures = require('../utils/apiFeatures');
 
 
-exports.getOverview = async(req, res, next) => {
+
+exports.getOverview = async(req, res) => {
 
     const tours = await Tour.find();
 
@@ -13,8 +13,17 @@ exports.getOverview = async(req, res, next) => {
 }
 
 
-exports.getTour = (req, res) => {
+exports.getTour = async(req, res) => {
+
+    // const tour = await Tour.findOne({ slug: req.params.slug }).populate({
+    //     path: 'reviews',
+    //     select: 'review rating user'
+    // });
+
+    const tour = await Tour.findOne({ slug: req.params.slug });
+
     res.status(200).render('tour', {
-        title: 'Tour'
-    })
+        title: 'The Forest Hiker',
+        tour
+    });
 }
