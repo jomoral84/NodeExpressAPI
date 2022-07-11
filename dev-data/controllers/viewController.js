@@ -37,8 +37,8 @@ exports.getOneTourById = async(req, res) => {
 
     if (tour) {
         res.status(200).render('tour', {
-            title: 'Tour',
-            tour: tour
+            title: `${tour.name} Tour`,
+            tour
         });
     }
 }
