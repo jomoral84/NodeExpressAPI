@@ -4,11 +4,11 @@ block content
       section.section-header
          .header__hero
             .header__hero-overlay &nbsp;
-            img.header__hero-img(src='/img/tour-5-cover.jpg', alt=`Pepe`)
+            img.header__hero-img(src='/img/tour-5-cover.jpg', alt=`${tour.name}`)
 
          .heading-box
             h1.heading-primary
-               span= tour.name
+               span= `${tour.name} Tour`
             .heading-box__group
                .heading-box__detail
                   svg.heading-box__icon
@@ -17,7 +17,7 @@ block content
                .heading-box__detail
                   svg.heading-box__icon
                      use(xlink:href='/img/icons.svg#icon-map-pin')
-                  span.heading-box__text Las Vegas, USA
+                  span.heading-box__text=tour.startLocation.description
 
       section.section-description
          .overview-box
