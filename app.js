@@ -14,6 +14,7 @@ const app = express();
 
 
 app.set('view engine', 'pug'); // Motor de plantillas usado: PUG
+//app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 
