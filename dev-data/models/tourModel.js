@@ -83,10 +83,10 @@ const tourSchema = new mongoose.Schema({
         select: false
     },
     startDates: [Date],
-    // secretTour: {
-    //     type: Boolean,
-    //     default: false
-    // },
+    secretTour: {
+        type: Boolean,
+        default: false
+    },
     startLocation: {
         // GeoJSON
         type: {
@@ -129,7 +129,7 @@ tourSchema.virtual('durationWeeks').get(function() {
 
 // Virtual populate
 tourSchema.virtual('reviews', {
-    ref: 'Review',
+    ref: 'review',
     foreignField: 'tour',
     localField: '_id'
 });
