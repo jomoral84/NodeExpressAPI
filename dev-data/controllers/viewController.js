@@ -42,3 +42,11 @@ exports.getOneTourById = async(req, res) => {
         });
     }
 }
+
+
+exports.getLoginForm = async(req, res) => {
+
+    res.status(200).render('login', {
+        title: 'Ingrese su usuario'
+    })
+}
