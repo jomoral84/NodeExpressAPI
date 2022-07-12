@@ -5,6 +5,7 @@ html
       link(rel='stylesheet' href='/css/style.css')
       link(rel='shortcut icon' type='image/png' href='/img/favicon.png')
       link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lato:300,300i,700')
+    
       title Natours - #{title}
 
   body 
@@ -13,9 +14,11 @@ html
  
     // Pug supports template inheritance. Template inheritance works via the block and extends keywords. 
 
-    block content      
-     
-
+    block content
+      
+    
     include _footer
 
-    script(scr='js/mapBox.js') 
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js')
+    script(src='/js/leafLet.js') 
+    script(src='/js/login.js') 

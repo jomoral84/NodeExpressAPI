@@ -13,7 +13,7 @@ router.get('/pruebapug', (req, res) => { // Prueba template PUG
 
 router.get('/', viewController.getOverview);
 router.get('/tour/:id', viewController.getOneTourById);
-
+router.get('/login', viewController.getLoginForm)
 
 
 

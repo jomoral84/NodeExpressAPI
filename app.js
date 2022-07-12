@@ -1,7 +1,9 @@
 const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
 const errorController = require('./dev-data/controllers/errorController');
+
 
 const tourRouter = require('./dev-data/routes/tourRoutes');
 const userRouter = require('./dev-data/routes/userRoutes');
@@ -26,6 +28,8 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use(express.json()); // Middleware
+app.use(cookieParser()); // Parse Cookie header and populate req.cookies with an object keyed by the cookie names
+
 app.use(express.static(`${__dirname}/public/`)); // Permite acceder al html overview y tour
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -38,6 +42,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => { // Se define un middleware para saber el horario del request
     req.requestTime = new Date().toISOString();
+    console.log(req.cookies);
     next();
 })
 
