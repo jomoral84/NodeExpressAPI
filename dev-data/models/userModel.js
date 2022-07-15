@@ -57,6 +57,10 @@ userSchema.pre('save', async function(next) { // Forma de encriptar un password
 });
 
 
+userSchema.methods.correctPassword = async function(candidatePassword, userPassword) { // Funcion que compara el password ingresado con el encriptado
+    return await bcrypt.compare(candidatePassword, userPassword);
+}
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
