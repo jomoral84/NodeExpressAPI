@@ -14,7 +14,8 @@ exports.signup = async(req, res, next) => {
         name: req.body.name,
         email: req.body.email,
         password: req.body.password,
-        passwordConfirm: req.body.passwordConfirm
+        passwordConfirm: req.body.passwordConfirm,
+        passwordChangeAt: req.body.passwordChangeAt
     });
 
     const token = signToken(newUser._id);
@@ -68,7 +69,7 @@ exports.protect = catchAsync(async(req, res, next) => {
     let token;
     if (
         req.headers.authorization &&
-        req.headers.authorization.startsWith('Token')
+        req.headers.authorization.startsWith('Bearer')
     ) {
         token = req.headers.authorization.split(' ')[1];
     } else if (req.cookies.jwt) {
@@ -76,9 +77,7 @@ exports.protect = catchAsync(async(req, res, next) => {
     }
 
     if (!token) {
-        return next(
-            new AppError('You are not logged in! Please log in to get access.', 401)
-        );
+        return next(new AppError('You are not logged in! Please log in to get access.', 401));
     }
 
 
@@ -87,4 +86,21 @@ exports.protect = catchAsync(async(req, res, next) => {
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
     console.log(decoded);
     // 3) Chequea que el usuario siga en una sesion
-})
+
+    const currentUser = await User.findById(decoded.id);
+    if (!currentUser) {
+        return next(new AppError('El usuario del token usado no existe!'));
+    }
+
+    // 4) Chequea si el usuario cambió de password despues de pedir el token
+    if (currentUser.changePasswordAfter(decoded.iat)) {
+        return next(new AppError('El usuario acaba de cambiar el password. Por favor realize el logueo nuevamente'));
+    }
+
+
+    // Acceso a la ruta protegida
+    req.user = currentUser;
+    next();
+
+
+});

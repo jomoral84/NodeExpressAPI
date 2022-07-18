@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({ // Esquema de mongoose
             message: 'Los passwords no coinciden!'
         }
     },
-
+    passwordChangedAt: Date,
     photo: [String],
 })
 
@@ -59,6 +59,18 @@ userSchema.pre('save', async function(next) { // Forma de encriptar un password
 
 userSchema.methods.correctPassword = async function(candidatePassword, userPassword) { // Funcion que compara el password ingresado con el encriptado
     return await bcrypt.compare(candidatePassword, userPassword);
+}
+
+
+userSchema.methods.changePasswordAfter = function(JWTTimestamp) {
+    if (this.passwordChangedAt) {
+        const changedTimeStamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+
+        console.log(changedTimeStamp);
+        return JWTTimestamp < changedTimeStamp;
+
+    }
+    return false;
 }
 
 const User = mongoose.model('User', userSchema);
