@@ -15,7 +15,8 @@ exports.signup = async(req, res, next) => {
         email: req.body.email,
         password: req.body.password,
         passwordConfirm: req.body.passwordConfirm,
-        passwordChangeAt: req.body.passwordChangeAt
+        passwordChangeAt: req.body.passwordChangeAt,
+        role: req.body.role
     });
 
     const token = signToken(newUser._id);
@@ -104,3 +105,13 @@ exports.protect = catchAsync(async(req, res, next) => {
 
 
 });
+
+exports.restrictTo = (...roles) => { // middleware function que restringe las acciones depende el rol del usuario
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+            return next(new AppError('No tiene permisos para realizar la accion!', 403));
+        }
+
+        next();
+    }
+}
