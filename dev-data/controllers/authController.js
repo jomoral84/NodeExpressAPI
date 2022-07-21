@@ -9,6 +9,7 @@ const signToken = id => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
 };
 
+
 exports.signup = async(req, res, next) => {
     const newUser = await User.create({
         name: req.body.name,
@@ -114,4 +115,30 @@ exports.restrictTo = (...roles) => { // middleware function que restringe las ac
 
         next();
     }
+}
+
+
+exports.forgotPassword = async(req, res, next) => { // Middleware para recuperar password 
+    // 1) Buscar el usuario por medio del mail
+    const user = await User.findOne({ email: req.body.email })
+
+    if (!user) {
+        return next(new AppError('No existe el usuario con ese mail!', 404));
+    }
+
+
+
+    // 2) Generar un token random
+    const resetToken = user.createPasswordResetToken();
+    await user.save();
+
+    // 3) Enviar el token al mail del usuario
+
+
+
+
+}
+
+exports.resetPassword = (req, res, next) => {
+
 }
