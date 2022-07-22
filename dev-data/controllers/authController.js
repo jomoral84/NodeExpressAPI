@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
+const sendEmail = require('../utils/email');
+const crypto = require('crypto');
 
 const signToken = id => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
@@ -126,19 +128,60 @@ exports.forgotPassword = async(req, res, next) => { // Middleware para recuperar
         return next(new AppError('No existe el usuario con ese mail!', 404));
     }
 
-
-
     // 2) Generar un token random
     const resetToken = user.createPasswordResetToken();
-    await user.save();
+    await user.save({ validateBeforeSave: false });
 
     // 3) Enviar el token al mail del usuario
+    const resetURL = `${req.protocol}://${req.get('host')}/api/users/resetPassword/${resetToken}`; // URL que se enviara por mail para cambiar el password
 
 
+    const message = `Olvido su password? Entre al siguiente link para obtener uno nuevo: ${resetURL}`;
 
+    try {
+        await sendEmail({
+            email: user.email,
+            subject: 'Se ha enviado su token valido por 10 minutos!',
+            message
+        })
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Token enviado!'
+        })
+
+    } catch (err) {
+        user.passwordResetToken = undefined;
+        user.passwordResetExpires = undefined;
+        await user.save({ validateBeforeSave: false });
+
+        return next(new AppError('Hubo un error enviando el mensaje!', 500));
+
+    }
 
 }
 
-exports.resetPassword = (req, res, next) => {
 
+
+exports.resetPassword = async(req, res, next) => {
+    //  1) Obtener el usuario basado en el token
+    const hashedtoken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+
+    const user = await User.findOne({ passwordResetToken: hashedtoken, passwordResetExpires: { $gt: Date.now() } });
+
+    // 2) Si el token no vencio setear el nuevo password
+    if (!user) {
+        return next(new AppError('Token invalido o expirado!', 400));
+    }
+
+    user.password = req.body.password;
+    user.passwordConfirm = req.body.passwordConfirm;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+
+    // 3) Update changedPasswordAt
+
+
+
+    // 4) 
 }

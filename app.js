@@ -48,8 +48,7 @@ app.use((req, res, next) => { // Se define un middleware para saber el horario d
 
 
 
-// ROUTERS
-
+// MAIN ROUTERS
 
 app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
