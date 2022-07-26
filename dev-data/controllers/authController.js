@@ -12,6 +12,9 @@ const signToken = id => {
 };
 
 
+
+
+
 exports.signup = async(req, res, next) => {
     const newUser = await User.create({
         name: req.body.name,
@@ -178,10 +181,33 @@ exports.resetPassword = async(req, res, next) => {
     user.passwordConfirm = req.body.passwordConfirm;
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
+    await user.save();
 
     // 3) Update changedPasswordAt
+    const token = signToken(user.id);
 
 
+    // 4) Logear al usuario, enviar el JWT
+    res.status(200).json({
+        status: 'success',
+        token
+    });
+}
 
-    // 4) 
+
+exports.updatePassword = async(req, re, next) => {
+    // 1) Seleccionar usuario
+    const user = await User.findById(req.user.id).select('+password');
+
+
+    // 2) Chequear si el password es el correcto
+    if (!(user.correctPassword(req.body.passwordCurrent, user.password))) {
+        return next(new AppError('Password invalido!', 401));
+    }
+    // 3) Si es asi, actualizar el password
+    user.password = req.body.password;
+    user.passwordConfirm = req.body.passwordConfirm;
+    await user.save();
+
+    // 4) Logear al usuario, enviar el JWT
 }
