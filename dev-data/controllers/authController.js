@@ -12,6 +12,18 @@ const signToken = id => {
 };
 
 
+exports.createSendToken = (user, statusCode, res) => {
+    const token = signToken(user._id);
+
+    res.status(statusCode).json({
+        status: 'success',
+        token,
+        data: {
+            user
+        }
+    })
+}
+
 
 
 
@@ -25,6 +37,8 @@ exports.signup = async(req, res, next) => {
         role: req.body.role
     });
 
+    // createSendToken(newUser, 201, res);
+
     const token = signToken(newUser._id);
 
     res.status(201).json({
@@ -34,6 +48,7 @@ exports.signup = async(req, res, next) => {
             user: newUser
         }
     })
+
 }
 
 
@@ -58,13 +73,18 @@ exports.login = async(req, res, next) => {
 
     // 3) Si la verificacion es ok se manda el token al cliente
 
+    //  createSendToken(user, 200, res);
+
+
     const token = signToken(user._id);
 
     res.status(201).json({
         status: 'success',
-        token
+        token,
+        data: {
+            user
+        }
     })
-
 }
 
 
@@ -184,18 +204,25 @@ exports.resetPassword = async(req, res, next) => {
     await user.save();
 
     // 3) Update changedPasswordAt
-    const token = signToken(user.id);
-
 
     // 4) Logear al usuario, enviar el JWT
+    // createSendToken(user, 200, res);
+
+    const token = signToken(user._id);
+
     res.status(200).json({
         status: 'success',
-        token
-    });
+        token,
+        data: {
+            user
+        }
+    })
+
+
 }
 
 
-exports.updatePassword = async(req, re, next) => {
+exports.updatePassword = async(req, res, next) => {
     // 1) Seleccionar usuario
     const user = await User.findById(req.user.id).select('+password');
 
@@ -204,10 +231,26 @@ exports.updatePassword = async(req, re, next) => {
     if (!(user.correctPassword(req.body.passwordCurrent, user.password))) {
         return next(new AppError('Password invalido!', 401));
     }
+
+
+
+
     // 3) Si es asi, actualizar el password
     user.password = req.body.password;
     user.passwordConfirm = req.body.passwordConfirm;
     await user.save();
 
     // 4) Logear al usuario, enviar el JWT
+    //  createSendToken(user, 200, res);
+
+    const token = signToken(user._id);
+
+    res.status(200).json({
+        status: 'success',
+        token,
+        data: {
+            user
+        }
+    })
+
 }

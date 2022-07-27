@@ -50,7 +50,11 @@ const userSchema = new mongoose.Schema({ // Esquema de mongoose
 
     passwordChangedAt: Date,
     passwordResetToken: String,
-    passwordResetExpires: Date
+    passwordResetExpires: Date,
+    active: {
+        type: Boolean,
+        default: true
+    }
 })
 
 
@@ -71,6 +75,12 @@ userSchema.pre('save', function(next) {
     if (!this.isModified('password') || this.isNew) return next();
 
     this.passwordChangedAt = Date.now() - 1000;
+    next();
+});
+
+
+userSchema.pre(/^find/, function(next) { // Query middleware que muestra solo los usuarios activos
+    this.find({ active: { $ne: false } })
     next();
 });
 
