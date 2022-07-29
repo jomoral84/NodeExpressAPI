@@ -2,7 +2,11 @@ const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const rateLimit = require('express-rate-limit');
+
+
 const errorController = require('./dev-data/controllers/errorController');
+
 
 
 const tourRouter = require('./dev-data/routes/tourRoutes');
@@ -26,6 +30,14 @@ app.set('views', path.join(__dirname, 'views'));
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
+
+const limiter = rateLimit({ // Delimitador de intentos de logeo a 3
+    max: 3,
+    windowsMs: 60 * 60 * 1000,
+    message: 'Demasiados intentos desde la IP, pruebe dentro de 1 hora'
+})
+
+app.use('/api', limiter);
 
 app.use(express.json()); // Middleware
 app.use(cookieParser()); // Parse Cookie header and populate req.cookies with an object keyed by the cookie names
