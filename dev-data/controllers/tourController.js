@@ -88,7 +88,7 @@ exports.getOneTour = async(req, res) => {
 
 exports.createTour = async(req, res) => {
     try {
-        const newTour = await Tour.create(req.body);
+        //   const newTour = await Tour.create(req.body);
 
         //     const newId = tours[tours.length - 1].id + 1; // Toma el ultimo tour del array
 
@@ -98,16 +98,32 @@ exports.createTour = async(req, res) => {
         //     fs.writeFile(`${__dirname}/dev-data/data/tours-simple.json`, JSON.stringify(tours), err => {
 
 
+        const newTour = await Tour.create({
+            name: req.body.name,
+            duration: req.body.duration,
+            maxGroupSize: req.body.maxGroupSize,
+            difficulty: req.body.difficulty,
+            price: req.body.price,
+            summary: req.body.summary,
+            imageCover: req.body.imageCover,
+            secretTour: req.body.secretTour,
+            rating: req.body.rating
+        });
+
+
+
         res.status(201).json({
             status: 'success',
             data: {
                 tour: newTour
             }
         });
+
     } catch (err) {
         res.status(400).json({
             status: 'fail',
             message: err
+
         });
     }
 };
