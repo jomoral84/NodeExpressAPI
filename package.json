@@ -10,7 +10,10 @@
         "dotenv": "^16.0.0",
         "ejs": "^3.1.8",
         "express": "^4.17.2",
+        "express-mongo-sanitize": "^2.2.0",
         "express-rate-limit": "^6.5.1",
+        "helmet": "^5.1.1",
+        "hpp": "^0.2.3",
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^6.2.6",
         "morgan": "^1.10.0",
@@ -18,7 +21,8 @@
         "nodemon": "^2.0.18",
         "pug": "^3.0.2",
         "slugify": "^1.6.5",
-        "validator": "^13.7.0"
+        "validator": "^13.7.0",
+        "xss-clean": "^0.1.1"
     },
     "devDependencies": {
         "eslint": "^8.18.0",

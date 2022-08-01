@@ -3,6 +3,10 @@ const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
+const hpp = require('hpp');
 
 
 const errorController = require('./dev-data/controllers/errorController');
@@ -38,8 +42,23 @@ const limiter = rateLimit({ // Delimitador de intentos de logeo a 3
 })
 
 app.use('/api', limiter);
+app.use(helmet()); // Secure HTTP headers
 
-app.use(express.json()); // Middleware
+
+// Data sanitization contra NoSQL query injections
+app.use(mongoSanitize());
+
+// Data sanitization contra XSS
+app.use(xss());
+
+// Prevent parameter pollution
+app.use(hpp({
+    whitelist: ['duration', 'ratingsQuantity', 'ratingAverage', 'maxGroupSize', 'difficulty', 'price']
+}));
+
+
+
+app.use(express.json({ limit: '10kb' })); // Middleware
 app.use(cookieParser()); // Parse Cookie header and populate req.cookies with an object keyed by the cookie names
 
 app.use(express.static(`${__dirname}/public/`)); // Permite acceder al html overview y tour
