@@ -15,6 +15,7 @@ const signToken = id => {
 
 
 exports.createSendToken = (user, statusCode, res) => {
+
     const token = signToken(user._id);
 
     const cookieOptions = { // Almacena el JWT en una HHTP Only cookie
@@ -37,10 +38,10 @@ exports.createSendToken = (user, statusCode, res) => {
         status: 'success',
         token,
         data: {
-            user
+            user: user
         }
-    })
-}
+    });
+};
 
 
 
@@ -58,6 +59,19 @@ exports.signup = async(req, res, next) => {
     // createSendToken(newUser, 201, res);
 
     const token = signToken(newUser._id);
+
+    const cookieOptions = { // Almacena el JWT en una HHTP Only cookie
+        expires: new Date(Date.now() + process.env.JWT_EXPIRES_COOKIE_IN * 24 * 60 * 60 * 1000),
+        secure: false,
+        httpOnly: true
+    }
+
+    if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+
+    res.cookie('jwt', token, cookieOptions);
+
+    // Quita el password que aparece en postman
+    user.password = undefined;
 
     res.status(201).json({
         status: 'success',
@@ -91,16 +105,26 @@ exports.login = async(req, res, next) => {
 
     // 3) Si la verificacion es ok se manda el token al cliente
 
-    //  createSendToken(user, 200, res);
-
-
     const token = signToken(user._id);
+
+    const cookieOptions = { // Almacena el JWT en una HHTP Only cookie
+        expires: new Date(Date.now() + process.env.JWT_EXPIRES_COOKIE_IN * 24 * 60 * 60 * 1000),
+        secure: false,
+        httpOnly: true
+    }
+
+    if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+
+    res.cookie('jwt', token, cookieOptions);
+
+    // Quita el password que aparece en postman
+    user.password = undefined;
 
     res.status(201).json({
         status: 'success',
         token,
         data: {
-            user
+            user: user
         }
     })
 }
@@ -149,6 +173,45 @@ exports.protect = catchAsync(async(req, res, next) => {
 
 
 });
+
+
+// Muestra las paginas cuando el usuario esta logeado
+exports.isLoggedIn = catchAsync(async(req, res, next) => {
+
+    // 1) Tomar el token 
+
+    if (req.cookies.jwt) {
+
+
+
+        // 2) Token de verificacion
+
+        const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
+
+
+        // 3) Chequea que el usuario siga en una sesion
+
+        const currentUser = await User.findById(decoded.id);
+        if (!currentUser) {
+            return next();
+        }
+
+        // 4) Chequea si el usuario cambió de password despues de pedir el token
+
+        if (currentUser.changePasswordAfter(decoded.iat)) {
+            return next();
+        }
+
+        // Hay un usuario logeado
+        res.locals.user = currentUser;
+        return next();
+    }
+    next();
+
+});
+
+
+
 
 exports.restrictTo = (...roles) => { // middleware function que restringe las acciones depende el rol del usuario
     return (req, res, next) => {

@@ -9,6 +9,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 
 
+
 const errorController = require('./dev-data/controllers/errorController');
 
 
@@ -42,7 +43,17 @@ const limiter = rateLimit({ // Delimitador de intentos de logeo a 3
 })
 
 app.use('/api', limiter);
-app.use(helmet()); // Secure HTTP headers
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: ["'self'", 'https:', 'http:', 'data:', 'ws:'],
+            baseUri: ["'self'"],
+            fontSrc: ["'self'", 'https:', 'http:', 'data:'],
+            scriptSrc: ["'self'", 'https:', 'http:', 'blob:'],
+            styleSrc: ["'self'", "'unsafe-inline'", 'https:', 'http:'],
+        },
+    })
+);
 
 
 // Data sanitization contra NoSQL query injections
