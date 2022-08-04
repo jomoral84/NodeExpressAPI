@@ -50,3 +50,10 @@ exports.getLoginForm = async(req, res) => {
         title: 'Ingrese su usuario'
     })
 }
+
+exports.getSignUpForm = async(req, res) => {
+
+    res.status(200).render('signUp', {
+        title: 'Ingrese su usuario'
+    })
+}

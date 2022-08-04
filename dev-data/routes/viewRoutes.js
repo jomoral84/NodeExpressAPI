@@ -16,7 +16,8 @@ router.use(authController.isLoggedIn);
 
 router.get('/', viewController.getOverview);
 router.get('/tour/:id', viewController.getOneTourById);
-router.get('/login', viewController.getLoginForm)
+router.get('/login', viewController.getLoginForm);
+router.get('/signUp', viewController.getSignUpForm);
 
 
 

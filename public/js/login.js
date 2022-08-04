@@ -1,9 +1,9 @@
 /* eslint-disable */
 
+import axios from 'axios';
+import { showAlert } from './alerts';
 
-const login = async(email, password) => {
-
-
+export const login = async(email, password) => {
     try {
         const res = await axios({
             method: 'POST',
@@ -15,25 +15,28 @@ const login = async(email, password) => {
         });
 
         if (res.data.status === 'success') {
-            alert('Usuario correcto!');
+            showAlert('success', 'Usuario correcto!');
             window.setTimeout(() => {
                 location.assign('/'); // Una vez logeado envia al usuario a la homepage
             }, 1500);
         }
 
     } catch (err) {
-        console.log(err);
+        showAlert('error', err.response.data.message);
     }
 };
 
 
 
-document.querySelector('.form').addEventListener('submit', e => {
-    e.preventDefault();
+export const logout = async() => {
+    try {
+        const res = await axios({
+            method: 'GET',
+            url: 'http://localhost:3000/api/v1/users/logout'
+        })
 
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    login(email, password);
-
-});
+        if ((res.data.status = 'success')) location.reload(true);
+    } catch (err) {
+        showAlert('error', 'Error al deslogearse');
+    }
+}

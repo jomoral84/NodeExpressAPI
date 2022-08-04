@@ -130,6 +130,14 @@ exports.login = async(req, res, next) => {
 }
 
 
+exports.logout = (req, res) => { // No se elimina la cookie, solo se sobreescribe con otro valor
+    res.cookie('jwt', 'sobreescribeCookie', {
+        expires: new Date(Date.now() + 10 * 1000),
+        httpOnly: true
+    })
+}
+
+
 
 exports.protect = catchAsync(async(req, res, next) => {
 
@@ -176,39 +184,41 @@ exports.protect = catchAsync(async(req, res, next) => {
 
 
 // Muestra las paginas cuando el usuario esta logeado
-exports.isLoggedIn = catchAsync(async(req, res, next) => {
+exports.isLoggedIn = async(req, res, next) => {
 
     // 1) Tomar el token 
 
     if (req.cookies.jwt) {
+        try {
 
 
+            // 2) Token de verificacion
 
-        // 2) Token de verificacion
-
-        const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
+            const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
 
 
-        // 3) Chequea que el usuario siga en una sesion
+            // 3) Chequea que el usuario siga en una sesion
 
-        const currentUser = await User.findById(decoded.id);
-        if (!currentUser) {
+            const currentUser = await User.findById(decoded.id);
+            if (!currentUser) {
+                return next();
+            }
+
+            // 4) Chequea si el usuario cambió de password despues de pedir el token
+
+            if (currentUser.changePasswordAfter(decoded.iat)) {
+                return next();
+            }
+
+            // Hay un usuario logeado
+            res.locals.user = currentUser;
+            return next();
+        } catch (err) {
             return next();
         }
-
-        // 4) Chequea si el usuario cambió de password despues de pedir el token
-
-        if (currentUser.changePasswordAfter(decoded.iat)) {
-            return next();
-        }
-
-        // Hay un usuario logeado
-        res.locals.user = currentUser;
-        return next();
     }
     next();
-
-});
+};
 
 
 
