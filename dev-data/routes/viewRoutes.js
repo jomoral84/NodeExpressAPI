@@ -12,12 +12,14 @@ router.get('/pruebapug', (req, res) => { // Prueba template PUG
     });
 })
 
-router.use(authController.isLoggedIn);
 
-router.get('/', viewController.getOverview);
+router.get('/', authController.isLoggedIn, viewController.getOverview);
 router.get('/tour/:id', viewController.getOneTourById);
+//router.get('/tour/:id', viewController.getTour);
+
 router.get('/login', viewController.getLoginForm);
 router.get('/signUp', viewController.getSignUpForm);
+router.get('/me', authController.protect, viewController.getAccount);
 
 
 

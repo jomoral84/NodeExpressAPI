@@ -36,8 +36,8 @@ if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
-const limiter = rateLimit({ // Delimitador de intentos de logeo a 3
-    max: 3,
+const limiter = rateLimit({ // Delimitador de intentos de logeo a 10
+    max: 10,
     windowsMs: 60 * 60 * 1000,
     message: 'Demasiados intentos desde la IP, pruebe dentro de 1 hora'
 })
