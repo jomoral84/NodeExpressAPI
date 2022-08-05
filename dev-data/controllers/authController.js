@@ -130,12 +130,14 @@ exports.login = async(req, res, next) => {
 }
 
 
-exports.logout = (req, res) => { // No se elimina la cookie, solo se sobreescribe con otro valor
-    res.cookie('jwt', 'sobreescribeCookie', {
+exports.logout = (req, res) => {
+    res.cookie('jwt', 'loggedout', {
         expires: new Date(Date.now() + 10 * 1000),
         httpOnly: true
-    })
-}
+    });
+    res.status(200).json({ status: 'success' });
+};
+
 
 
 

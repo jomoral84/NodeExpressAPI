@@ -86,7 +86,7 @@ app.use(
                     'https://leafletjs.com',
                     'https://*.cloudflare.com/',
                     'https://bundle.js:*',
-                    'ws://127.0.0.1:*/',
+                    'ws://localhost:*/',
 
                 ],
                 upgradeInsecureRequests: [],
