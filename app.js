@@ -110,6 +110,7 @@ app.use(hpp({
 
 
 app.use(express.json({ limit: '10kb' })); // Middleware
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(cookieParser()); // Parse Cookie header and populate req.cookies with an object keyed by the cookie names
 
 app.use(express.static(`${__dirname}/public/`)); // Permite acceder al html overview y tour

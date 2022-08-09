@@ -21,6 +21,8 @@ router.get('/login', viewController.getLoginForm);
 router.get('/signUp', viewController.getSignUpForm);
 router.get('/me', authController.protect, viewController.getAccount);
 
+// router.post('/submit-user-data', authController.protect, viewController.updateUserData);
+
 
 
 module.exports = router; // SE EXPORTA EL ROUTER

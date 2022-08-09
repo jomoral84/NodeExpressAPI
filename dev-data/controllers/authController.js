@@ -322,8 +322,8 @@ exports.updatePassword = async(req, res, next) => {
 
 
     // 2) Chequear si el password es el correcto
-    if (!(user.correctPassword(req.body.passwordCurrent, user.password))) {
-        return next(new AppError('Password invalido!', 401));
+    if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
+        return next(new AppError('Password actual invalido!', 401));
     }
 
 
