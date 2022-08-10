@@ -125,7 +125,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => { // Se define un middleware para saber el horario del request
     req.requestTime = new Date().toISOString();
-    console.log(req.headers);
+    //  console.log(req.headers);
     next();
 })
 

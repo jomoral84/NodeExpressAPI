@@ -41,7 +41,10 @@ const userSchema = new mongoose.Schema({ // Esquema de mongoose
         }
     },
 
-    photo: [String],
+    photo: {
+        type: String,
+        default: 'default.jpg'
+    },
     role: {
         type: String,
         enum: ['user', 'advancedUser', 'admin'],

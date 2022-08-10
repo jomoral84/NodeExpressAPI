@@ -62,7 +62,6 @@ exports.signup = async(req, res, next) => {
 
     const cookieOptions = { // Almacena el JWT en una HHTP Only cookie
         expires: new Date(Date.now() + process.env.JWT_EXPIRES_COOKIE_IN * 24 * 60 * 60 * 1000),
-        secure: false,
         httpOnly: true
     }
 
@@ -71,7 +70,7 @@ exports.signup = async(req, res, next) => {
     res.cookie('jwt', token, cookieOptions);
 
     // Quita el password que aparece en postman
-    user.password = undefined;
+    newUser.password = undefined;
 
     res.status(201).json({
         status: 'success',

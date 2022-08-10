@@ -7,7 +7,7 @@ header.header
       if user
         a.nav__el.nav__el--logout Log Out
         a.nav__el.nav(href='/me')=user.name 
-        img.nav__user-img(src=`/img/users/default.jpg` alt='Foto')
+        img.nav__user-img(src=`/img/users/${user.photo}` alt='Foto')
       else   
         a.nav__el(href='/login') Log In 
         a.nav__el.nav__el--cta(href='/signUp') Sign In
