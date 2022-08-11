@@ -22,6 +22,9 @@ export const updateSettings = async(data, type) => { // type puede ser password 
         if (res.data.status === 'success') {
             console.log('datos modificados!')
             showAlert('success', `${type.toUpperCase()} modificados!`);
+            window.setTimeout(() => {
+                location.reload(); // Recarga la pagina para que la foto se actualize en el momento
+            }, 1000);
         }
     } catch (err) {
         showAlert('error', err.response.data.message);

@@ -477,12 +477,12 @@ if (loginForm) loginForm.addEventListener('submit', (e)=>{
 if (logoutButton) logoutButton.addEventListener('click', _login.logout);
 if (userDataForm) userDataForm.addEventListener('submit', (e)=>{
     e.preventDefault();
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    _updateSettings.updateSettings({
-        name,
-        email
-    }, 'data');
+    const form = new FormData();
+    form.append('name', document.getElementById('name').value);
+    form.append('email', document.getElementById('email').value);
+    form.append('photo', document.getElementById('photo').files[0]);
+    console.log(form);
+    _updateSettings.updateSettings(form, 'data');
 });
 if (userPasswordForm) userPasswordForm.addEventListener('submit', async (e)=>{
     e.preventDefault();
@@ -10888,6 +10888,9 @@ const updateSettings = async (data, type)=>{
         if (res.data.status === 'success') {
             console.log('datos modificados!');
             _alerts.showAlert('success', `${type.toUpperCase()} modificados!`);
+            window.setTimeout(()=>{
+                location.reload(); // Recarga la pagina para que la foto se actualize en el momento
+            }, 1000);
         }
     } catch (err) {
         _alerts.showAlert('error', err.response.data.message);

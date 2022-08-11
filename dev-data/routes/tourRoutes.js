@@ -29,7 +29,7 @@ router
 router
     .route('/:id')
     .get(tourController.getOneTour)
-    .patch(tourController.updateTour)
+    .patch(authController.protect, authController.restrictTo('admin'), tourController.uploadTourImages, tourController.resizeTourImages, tourController.updateTour)
     .delete(authController.protect,
         authController.restrictTo('admin'),
         tourController.deleteTour);

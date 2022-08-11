@@ -128,5 +128,4 @@ exports.deleteMe = async(req, res, next) => {
         message: 'Usuario Borrado',
         data: null
     });
-
 }
