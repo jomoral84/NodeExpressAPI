@@ -15,8 +15,8 @@ const router = express.Router();
 
 router
     .route('/')
-    .get(authController.protect, tourController.getAllTours)
-    .post(tourController.createTour);
+    .get( /*authController.protect , */ tourController.getAllTours)
+    .post(authController.protect, tourController.createTour);
 
 router
     .route('/top-5-cheap').get(tourController.aliasTopTours, tourController.getAllTours);

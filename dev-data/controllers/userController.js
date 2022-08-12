@@ -36,14 +36,14 @@ const upload = multer({
 
 exports.uploadUserPhoto = upload.single('photo');
 
-exports.resizeUserPhoto = (req, res, next) => { // Middleware que utiliza Sharp para el cambio de tamaño de la imagen
+exports.resizeUserPhoto = async(req, res, next) => { // Middleware que utiliza Sharp para el cambio de tamaño de la imagen
     if (!req.file) {
         return next();
     }
 
     req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
 
-    sharp(req.file.buffer).resize(500, 500).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`public/img/users/${req.file.filename}`);
+    await sharp(req.file.buffer).resize(500, 500).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`public/img/users/${req.file.filename}`);
 
     next();
 

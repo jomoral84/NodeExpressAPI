@@ -4,9 +4,9 @@ const slugify = require('slugify');
 // const validator = require('validator');
 
 const tourSchema = new mongoose.Schema({
-    _id: {
-        type: String
-    },
+    // _id: {
+    //     type: String
+    // },
 
     name: {
         type: String,
@@ -104,7 +104,10 @@ const tourSchema = new mongoose.Schema({
             default: 'Point',
             enum: ['Point']
         },
-        coordinates: [Number],
+        coordinates: {
+            type: [Number],
+            default: [0, 0]
+        },
         address: String,
         description: String,
         day: Number

@@ -1,7 +1,9 @@
 const multer = require('multer');
+const sharp = require('sharp');
 const AppError = require('../utils/appError');
 const Tour = require('../models/tourModel');
 const APIFeatures = require('../utils/apiFeatures');
+const catchAsync = require('../utils/catchAsync');
 
 
 const multerStorage = multer.memoryStorage();
@@ -29,8 +31,22 @@ exports.uploadTourImages = upload.fields([
 // upload.array('images', 5);
 
 
-exports.resizeTourImages = (req, res, next) => {
+exports.resizeTourImages = async(req, res, next) => {
+
+    if (!req.files.imageCover || !req.files.images) {
+        return next();
+    }
+
+    // 1) Cover image
+    req.body.imageCover = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
+
+    await sharp(req.file.imageCover[0].buffer).resize(2000, 1333).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`public/img/tours/${req.body.imageCover}`);
+
     next();
+
+
+    // 2) 
+
 }
 
 
@@ -75,7 +91,10 @@ exports.aliasTopTours = (req, res, next) => {
 exports.getAllTours = async(req, res) => {
     try {
         // EXECUTE QUERY
-        const features = new APIFeatures(Tour.find(), req.query)
+        let filter = {};
+        if (req.params.tourId) filter = { tour: req.params.tourId };
+
+        const features = new APIFeatures(Tour.find(filter), req.query)
             .filter()
             .sort()
             .limitFields()
@@ -99,67 +118,71 @@ exports.getAllTours = async(req, res) => {
 };
 
 
-exports.getOneTour = async(req, res) => {
+exports.getOneTour = async(req, res, next) => {
 
-    try {
-        const tour = await Tour.findById(req.params.id);
+    //  try {
+    const tour = await Tour.findById(req.params.id);
 
-        res.status(200).json({
-            status: 'success',
-            data: {
-                tour
-            }
-        });
-    } catch (err) {
-        res.status(400).json({
-            status: 'fail',
-            message: err
-        });
+    if (!tour) {
+        return next(new AppError('No hay tour con esa ID', 404));
     }
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            tour
+        }
+    });
+    // } catch (err) {
+    //     res.status(400).json({
+    //         status: 'fail',
+    //         message: err
+    //     });
+    // }
 }
 
 
-exports.createTour = async(req, res) => {
-    try {
-        //   const newTour = await Tour.create(req.body);
 
-        //     const newId = tours[tours.length - 1].id + 1; // Toma el ultimo tour del array
+exports.createTour = catchAsync(async(req, res) => {
+    //   try {
+    //   const newTour = await Tour.create(req.body);
 
-        //     const newTour = Object.assign({ id: newId }, req.body);
-        //     tours.push(newTour);
+    //     const newId = tours[tours.length - 1].id + 1; // Toma el ultimo tour del array
 
-        //     fs.writeFile(`${__dirname}/dev-data/data/tours-simple.json`, JSON.stringify(tours), err => {
+    //     const newTour = Object.assign({ id: newId }, req.body);
+    //     tours.push(newTour);
 
-
-        const newTour = await Tour.create({
-            name: req.body.name,
-            duration: req.body.duration,
-            maxGroupSize: req.body.maxGroupSize,
-            difficulty: req.body.difficulty,
-            price: req.body.price,
-            summary: req.body.summary,
-            imageCover: req.body.imageCover,
-            secretTour: req.body.secretTour,
-            rating: req.body.rating
-        });
+    //     fs.writeFile(`${__dirname}/dev-data/data/tours-simple.json`, JSON.stringify(tours), err => {
 
 
+    const newTour = await Tour.create(req.body);
+    // name: req.body.name,
+    // price: req.body.price,
+    // duration: req.body.duration,
+    // difficulty: req.body.difficulty,
+    // rating: req.body.rating,
+    // maxGroupSize: req.body.maxGroupSize,
+    // summary: req.body.summary,
+    // secretTour: req.body.secretTour,
+    // imageCover: req.body.imageCover,
 
-        res.status(201).json({
-            status: 'success',
-            data: {
-                tour: newTour
-            }
-        });
 
-    } catch (err) {
-        res.status(400).json({
-            status: 'fail',
-            message: err
 
-        });
-    }
-};
+    res.status(201).json({
+        status: 'success',
+        data: {
+            tour: newTour
+        }
+    });
+
+    // } catch (err) {
+    //     res.status(400).json({
+    //         status: 'fail',
+    //         message: err
+
+    //     });
+    // }
+});
 
 
 exports.updateTour = async(req, res) => {
