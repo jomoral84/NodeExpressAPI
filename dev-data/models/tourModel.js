@@ -1,13 +1,11 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const Review = require('./reviewModel');
+
 // const User = require('./userModel');
 // const validator = require('validator');
 
 const tourSchema = new mongoose.Schema({
-    // _id: {
-    //     type: String
-    // },
-
     name: {
         type: String,
         required: [true, 'A tour must have a name'],
@@ -17,11 +15,7 @@ const tourSchema = new mongoose.Schema({
         minlength: [10, 'A tour name must have more or equal then 10 characters']
             // validate: [validator.isAlpha, 'Tour name must only contain characters']
     },
-
-    slug: {
-        type: String
-    },
-
+    slug: String,
     duration: {
         type: Number,
         required: [true, 'A tour must have a duration']
@@ -104,10 +98,7 @@ const tourSchema = new mongoose.Schema({
             default: 'Point',
             enum: ['Point']
         },
-        coordinates: {
-            type: [Number],
-            default: [0, 0]
-        },
+        coordinates: [Number],
         address: String,
         description: String,
         day: Number
@@ -132,7 +123,7 @@ tourSchema.virtual('durationWeeks').get(function() {
 
 // Virtual populate
 tourSchema.virtual('reviews', {
-    ref: 'review',
+    ref: 'Review',
     foreignField: 'tour',
     localField: '_id'
 });
@@ -161,8 +152,6 @@ tourSchema.pre('save', function(next) {
 
 // QUERY MIDDLEWARE
 // tourSchema.pre('find', function(next) {
-
-
 tourSchema.pre(/^find/, function(next) {
     this.find({ secretTour: { $ne: true } });
 
