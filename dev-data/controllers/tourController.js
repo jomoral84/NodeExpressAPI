@@ -31,7 +31,8 @@ exports.uploadTourImages = upload.fields([
 // upload.array('images', 5);
 
 
-exports.resizeTourImages = async(req, res, next) => {
+exports.resizeTourImages = async(req, res, next) => { // Transforma las imagenes a un formato y tamaño predeterminado
+
 
     if (!req.files.imageCover || !req.files.images) {
         return next();
@@ -45,7 +46,20 @@ exports.resizeTourImages = async(req, res, next) => {
     next();
 
 
-    // 2) 
+    // 2) Tour inside images
+
+    req.body.images = [];
+    await Promise.all(
+        req.files.images.map(async(file, i) => {
+
+            const filename = `tour-${req.params.id}-${Date.now()}-${i+1}.jpeg`;
+
+            await sharp(file.buffer).resize(2000, 1333).toFormat('jpeg').jpeg({ quality: 100 }).toFile(`public/img/tours/${filename}`);
+
+            req.body.images.push(filename);
+        }));
+
+    next();
 
 }
 
