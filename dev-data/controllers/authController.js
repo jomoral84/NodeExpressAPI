@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
-const sendEmail = require('../utils/email');
+const Email = require('../utils/email');
 const crypto = require('crypto');
 
 
@@ -47,16 +47,20 @@ exports.createSendToken = (user, statusCode, res) => {
 
 
 exports.signup = async(req, res) => {
-    const newUser = await User.create({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        passwordConfirm: req.body.passwordConfirm,
-        passwordChangeAt: req.body.passwordChangeAt,
-        role: req.body.role
-    });
+    const newUser = await User.create(req.body);
+    // name: req.body.name,
+    // email: req.body.email,
+    // password: req.body.password,
+    // passwordConfirm: req.body.passwordConfirm,
+    // passwordChangeAt: req.body.passwordChangeAt,
+    // role: req.body.role
+
 
     // createSendToken(newUser, 201, res);
+
+    const url = `http://localhost:3000/me`;
+    console.log(url);
+    await new Email(newUser, url).sendWelcome(); // Envia mail al usuario de bienvenida
 
     const token = signToken(newUser._id);
 
@@ -249,17 +253,11 @@ exports.forgotPassword = async(req, res, next) => { // Middleware para recuperar
     await user.save({ validateBeforeSave: false });
 
     // 3) Enviar el token al mail del usuario
-    const resetURL = `${req.protocol}://${req.get('host')}/api/users/resetPassword/${resetToken}`; // URL que se enviara por mail para cambiar el password
-
-
-    const message = `Olvido su password? Entre al siguiente link para obtener uno nuevo: ${resetURL}`;
-
     try {
-        await sendEmail({
-            email: user.email,
-            subject: 'Se ha enviado su token valido por 10 minutos!',
-            message
-        })
+
+        const resetURL = `${req.protocol}://${req.get('host')}/api/users/resetPassword/${resetToken}`; // URL que se enviara por mail para cambiar el password
+
+        await new Email(user, resetURL).sendPasswordReset();
 
         res.status(200).json({
             status: 'success',
@@ -267,6 +265,7 @@ exports.forgotPassword = async(req, res, next) => { // Middleware para recuperar
         })
 
     } catch (err) {
+        console.log(err);
         user.passwordResetToken = undefined;
         user.passwordResetExpires = undefined;
         await user.save({ validateBeforeSave: false });
