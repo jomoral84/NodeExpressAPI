@@ -16,7 +16,8 @@ const errorController = require('./dev-data/controllers/errorController');
 
 const tourRouter = require('./dev-data/routes/tourRoutes');
 const userRouter = require('./dev-data/routes/userRoutes');
-const viewRouter = require('./dev-data/routes/viewRoutes')
+const viewRouter = require('./dev-data/routes/viewRoutes');
+const bookingRouter = require('./dev-data/routes/bookingRoutes');
 const AppError = require('./dev-data/utils/appError');
 const globalErrorHandler = require('./dev-data/controllers/errorController');
 
@@ -45,54 +46,53 @@ const limiter = rateLimit({ // Delimitador de intentos de logeo a 10
 app.use('/api', limiter);
 app.use(
     helmet({
-        contentSecurityPolicy: {
-            directives: {
-                defaultSrc: ["'self'", 'data:', 'blob:', 'https:', 'ws:'],
-                baseUri: ["'self'"],
-                fontSrc: ["'self'", 'https:', 'data:'],
-                scriptSrc: [
-                    "'self'",
-                    'https:',
-                    'http:',
-                    'blob:',
-                    'https://*.mapbox.com',
-                    'https://leafletjs.com',
-                    'https://js.stripe.com',
-                    'https://m.stripe.network',
-                    'https://*.cloudflare.com',
-                ],
-                frameSrc: ["'self'", 'https://js.stripe.com'],
-                objectSrc: ["'none'"],
-                styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
-                workerSrc: [
-                    "'self'",
-                    'data:',
-                    'blob:',
-                    'https://*.tiles.mapbox.com',
-                    'https://api.mapbox.com',
-                    'https://events.mapbox.com',
-                    'https://m.stripe.network',
-                ],
-                childSrc: ["'self'", 'blob:'],
-                imgSrc: ["'self'", 'data:', 'blob:'],
-                formAction: ["'self'"],
-                connectSrc: [
-                    "'self'",
-                    "'unsafe-inline'",
-                    'data:',
-                    'blob:',
-                    'https://*.stripe.com',
-                    'https://*.mapbox.com',
-                    'https://leafletjs.com',
-                    'https://*.cloudflare.com/',
-                    'https://bundle.js:*',
-                    'ws://localhost:*/',
+        contentSecurityPolicy: false
+            // directives: {
+            //     defaultSrc: ["'self'", 'data:', 'blob:', 'https:', 'ws:'],
+            //     baseUri: ["'self'"],
+            //     fontSrc: ["'self'", 'https:', 'data:'],
+            //     scriptSrc: [
+            //         "'self'",
+            //         'https:',
+            //         'http:',
+            //         'blob:',
+            //         'https://*.mapbox.com',
+            //         'https://leafletjs.com',
+            //         'https://js.stripe.com',
+            //         'https://m.stripe.network',
+            //         'https://*.cloudflare.com',
+            //     ],
+            //     frameSrc: ["'self'", 'https://js.stripe.com'],
+            //     objectSrc: ["'none'"],
+            //     styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
+            //     workerSrc: [
+            //         "'self'",
+            //         'data:',
+            //         'blob:',
+            //         'https://*.tiles.mapbox.com',
+            //         'https://api.mapbox.com',
+            //         'https://events.mapbox.com',
+            //         'https://m.stripe.network',
+            //     ],
+            //     childSrc: ["'self'", 'blob:'],
+            //     imgSrc: ["'self'", 'data:', 'blob:'],
+            //     formAction: ["'self'"],
+            //     connectSrc: [
+            //         "'self'",
+            //         "'unsafe-inline'",
+            //         'data:',
+            //         'blob:',
+            //         'https://*.stripe.com',
+            //         'https://*.mapbox.com',
+            //         'https://leafletjs.com',
+            //         'https://*.cloudflare.com/',
+            //         'https://bundle.js:*',
+            //         'ws://localhost:*/',
 
-                ],
-                upgradeInsecureRequests: [],
-            },
-        },
-    })
+        //     ],
+        //     upgradeInsecureRequests: [],
+        // },
+    }, )
 );
 
 
@@ -136,6 +136,10 @@ app.use((req, res, next) => { // Se define un middleware para saber el horario d
 app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+//app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/bookings', bookingRouter);
+
+
 
 app.all('*', (req, res, next) => { // Middleware que maneja el error de ruta
 

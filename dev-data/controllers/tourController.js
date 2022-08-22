@@ -132,7 +132,7 @@ exports.getAllTours = async(req, res) => {
 };
 
 
-exports.getOneTour = async(req, res, next) => {
+exports.getOneTour = catchAsync(async(req, res, next) => {
 
     //  try {
     const tour = await Tour.findById(req.params.id);
@@ -153,7 +153,7 @@ exports.getOneTour = async(req, res, next) => {
     //         message: err
     //     });
     // }
-}
+});
 
 
 

@@ -4,18 +4,9 @@ const authController = require('../controllers/authController');
 
 const router = express.Router();
 
-// router.param('id', tourController.checkID); // PARAM MIDDLEWARE
-
-
-
-// router.param('id', tourController.checkID);
-
-
-
-
 router
     .route('/')
-    .get( /*authController.protect , */ tourController.getAllTours)
+    .get(authController.protect, tourController.getAllTours)
     .post(authController.protect, tourController.createTour);
 
 router
@@ -30,8 +21,6 @@ router
     .route('/:id')
     .get(tourController.getOneTour)
     .patch(authController.protect, authController.restrictTo('admin'), tourController.uploadTourImages, tourController.resizeTourImages, tourController.updateTour)
-    .delete(authController.protect,
-        authController.restrictTo('admin'),
-        tourController.deleteTour);
+    .delete(authController.protect, authController.restrictTo('admin'), tourController.deleteTour);
 
 module.exports = router; // SE EXPORTA EL ROUTER

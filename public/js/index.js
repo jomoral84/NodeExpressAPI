@@ -4,6 +4,7 @@ import '@babel/polyfill';
 import { displayMap } from './mapbox';
 import { login, logout } from './login';
 import { updateSettings } from './updateSettings';
+import { bookTour } from './stripe';
 
 
 const mapBox = document.getElementById('map');
@@ -11,6 +12,7 @@ const loginForm = document.querySelector('.form--login');
 const logoutButton = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
+const bookBtn = document.getElementById('book-tour');
 
 
 if (mapBox) {
@@ -69,3 +71,15 @@ if (userPasswordForm) {
 
     });
 }
+
+if (bookBtn) {
+    console.log('Boton reservar apretado 1');
+    bookBtn.addEventListener('click', e => {
+        console.log('Boton reservar apretado 2')
+        e.target.textContent = 'Procesando...';
+
+        const { tourId } = e.target.dataset;
+        bookTour(tourId);
+
+    });
+};

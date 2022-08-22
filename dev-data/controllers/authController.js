@@ -87,7 +87,7 @@ exports.signup = async(req, res) => {
 }
 
 
-exports.login = async(req, res, next) => {
+exports.login = catchAsync(async(req, res, next) => {
     const { email, password } = req.body;
 
     // 1) Chequea si los datos existen
@@ -130,7 +130,7 @@ exports.login = async(req, res, next) => {
             user: user
         }
     })
-}
+})
 
 
 exports.logout = (req, res) => {
