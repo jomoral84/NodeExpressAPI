@@ -15,6 +15,18 @@ const userPasswordForm = document.querySelector('.form-user-password');
 const bookBtn = document.getElementById('book-tour');
 
 
+if (bookBtn) {
+
+    bookBtn.addEventListener('click', e => {
+        e.target.textContent = 'Procesando...';
+
+        const { tourId } = e.target.dataset;
+        bookTour(tourId);
+
+    });
+};
+
+
 if (mapBox) {
     const locations = JSON.parse(mapBox.dataset.locations);
     displayMap(locations);
@@ -71,15 +83,3 @@ if (userPasswordForm) {
 
     });
 }
-
-if (bookBtn) {
-    console.log('Boton reservar apretado 1');
-    bookBtn.addEventListener('click', e => {
-        console.log('Boton reservar apretado 2')
-        e.target.textContent = 'Procesando...';
-
-        const { tourId } = e.target.dataset;
-        bookTour(tourId);
-
-    });
-};

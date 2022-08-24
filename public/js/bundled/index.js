@@ -466,6 +466,11 @@ const logoutButton = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
 const bookBtn = document.getElementById('book-tour');
+if (bookBtn) bookBtn.addEventListener('click', (e)=>{
+    e.target.textContent = 'Procesando...';
+    const { tourId  } = e.target.dataset;
+    _stripe.bookTour(tourId);
+});
 if (mapBox) {
     const locations = JSON.parse(mapBox.dataset.locations);
     _mapbox.displayMap(locations);
@@ -502,15 +507,6 @@ if (userPasswordForm) userPasswordForm.addEventListener('submit', async (e)=>{
     document.getElementById('password').value = '';
     document.getElementById('passwordConfirm').value = '';
 });
-if (bookBtn) {
-    console.log('Boton reservar apretado 1');
-    bookBtn.addEventListener('click', (e)=>{
-        console.log('Boton reservar apretado 2');
-        e.target.textContent = 'Procesando...';
-        const { tourId  } = e.target.dataset;
-        _stripe.bookTour(tourId);
-    });
-}
 
 },{"@babel/polyfill":"c41dc","./mapbox":"h65P9","./login":"apbKM","./updateSettings":"keNDf","./stripe":"ksRuO"}],"c41dc":[function(require,module,exports) {
 "use strict";
@@ -10917,22 +10913,22 @@ parcelHelpers.export(exports, "bookTour", ()=>bookTour
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _alerts = require("./alerts");
 const bookTour = async (tourId)=>{
+    const stripe = Stripe('pk_test_51LZcf0EbdxPYBJYMZfhmhxNJ2TkQMiUTMPXFAB4qcblxupFfsBC6bWQnmiT8eXMBCOHWbZ4ELYavsjNfnjJ1NPM900YwowhIDk'); // API Test Key de Stripe
     try {
-        // 1) 
-        const stripe = Stripe('pk_test_51LZcf0EbdxPYBJYMZfhmhxNJ2TkQMiUTMPXFAB4qcblxupFfsBC6bWQnmiT8eXMBCOHWbZ4ELYavsjNfnjJ1NPM900YwowhIDk'); // API Test Key de Stripe
+        // 1) Get checkout session from API
         const session = await _axiosDefault.default(`/api/v1/bookings/checkout-session/${tourId}`);
         console.log(session);
         // 2) Crea checkout form
-        // await stripe.redirectToCheckout({
-        //     sessionId: session.data.session.id
-        // })
-        window.location.replace(session.data.session.url);
+        await stripe.redirectToCheckout({
+            sessionId: session.data.session.id
+        });
+    //   window.location.replace(session.data.session.url);
     } catch (err) {
         console.log(err);
         _alerts.showAlert('error', err);
     }
 };
 
-},{"axios":"iYoWk","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","./alerts":"ImTlr"}]},["7gk4E","aQpZB"], "aQpZB", "parcelRequire94c2")
+},{"axios":"iYoWk","./alerts":"ImTlr","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}]},["7gk4E","aQpZB"], "aQpZB", "parcelRequire94c2")
 
 //# sourceMappingURL=index.js.map

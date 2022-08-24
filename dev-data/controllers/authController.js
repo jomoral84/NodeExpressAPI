@@ -66,6 +66,7 @@ exports.signup = async(req, res) => {
 
     const cookieOptions = { // Almacena el JWT en una HHTP Only cookie
         expires: new Date(Date.now() + process.env.JWT_EXPIRES_COOKIE_IN * 24 * 60 * 60 * 1000),
+        secure: false,
         httpOnly: true
     }
 
@@ -120,6 +121,7 @@ exports.login = catchAsync(async(req, res, next) => {
 
     res.cookie('jwt', token, cookieOptions);
 
+
     // Quita el password que aparece en postman
     user.password = undefined;
 
@@ -167,8 +169,8 @@ exports.protect = catchAsync(async(req, res, next) => {
     // 2) Token de verificacion
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
     console.log(decoded);
-    // 3) Chequea que el usuario siga en una sesion
 
+    // 3) Chequea que el usuario siga en una sesion
     const currentUser = await User.findById(decoded.id);
     if (!currentUser) {
         return next(new AppError('El usuario del token usado no existe!'));
@@ -185,7 +187,6 @@ exports.protect = catchAsync(async(req, res, next) => {
     res.locals.user = currentUser;
     next();
 
-
 });
 
 
@@ -196,22 +197,16 @@ exports.isLoggedIn = async(req, res, next) => {
 
     if (req.cookies.jwt) {
         try {
-
-
             // 2) Token de verificacion
-
             const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
 
-
             // 3) Chequea que el usuario siga en una sesion
-
             const currentUser = await User.findById(decoded.id);
             if (!currentUser) {
                 return next();
             }
 
             // 4) Chequea si el usuario cambió de password despues de pedir el token
-
             if (currentUser.changePasswordAfter(decoded.iat)) {
                 return next();
             }

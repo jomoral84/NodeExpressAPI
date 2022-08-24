@@ -1,7 +1,10 @@
+/* eslint-disable */
+
 const catchAsync = require('../utils/catchAsync');
 const Tour = require('../models/tourModel');
 const User = require('../models/userModel');
 const AppError = require('../utils/appError');
+const Booking = require('../models/bookingModel');
 
 
 
@@ -9,7 +12,10 @@ exports.getOverview = async(req, res) => {
 
     const tours = await Tour.find();
 
-    res.status(200).render('overview', {
+    res.status(200).set(
+        'Content-Security-Policy',
+        "default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;"
+    ).render('overview', {
         title: 'Todos Los Tours',
         tours: tours
     })
@@ -34,7 +40,10 @@ exports.getTour = async(req, res) => {
         return (new AppError('No existe Tour con ese nombre', 404));
     }
 
-    res.status(200).render('tour', {
+    res.status(200).set(
+        'Content-Security-Policy',
+        "default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;"
+    ).render('tour', {
         title: 'Tour',
         tour
     });
@@ -78,6 +87,22 @@ exports.getAccount = async(req, res) => {
         title: 'Datos de usuario'
     })
 }
+
+
+exports.getMyTours = catchAsync(async(req, res, next) => {
+
+    // 1) Find all bookings
+    const booking = await Booking.find({ user: req.user.id })
+
+    // 2) Find tours with the returned Id
+    const tourIDs = booking.map(el => el.tour);
+    const tours = await Tour.find({ _id: { $in: tourIDs } }) // Selecciona todos los tours que tiene un Id que se encuentra ($in) en el tourIds array
+
+    res.status(200).render('overview', {
+        title: 'Mis Tours',
+        tours
+    })
+})
 
 
 // exports.updateUserData = async(req, res) => {
