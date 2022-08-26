@@ -59,7 +59,7 @@ exports.signup = async(req, res) => {
     // createSendToken(newUser, 201, res);
 
     const url = `http://localhost:3000/me`;
-    console.log(url);
+
     //  await new Email(newUser, url).sendWelcome(); // Envia mail al usuario de bienvenida
 
     const token = signToken(newUser._id);
@@ -103,9 +103,6 @@ exports.login = catchAsync(async(req, res, next) => {
     if (!user || !(await user.correctPassword(password, user.password))) {
         return next(new AppError('Mail o password incorrectos!', 401));
     }
-
-
-    console.log(user);
 
     // 3) Si la verificacion es ok se manda el token al cliente
 
@@ -168,7 +165,7 @@ exports.protect = catchAsync(async(req, res, next) => {
 
     // 2) Token de verificacion
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-    console.log(decoded);
+
 
     // 3) Chequea que el usuario siga en una sesion
     const currentUser = await User.findById(decoded.id);

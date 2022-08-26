@@ -8,6 +8,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const csp = require('express-csp');
+const compression = require('compression');
 
 
 
@@ -121,10 +122,7 @@ app.use(express.static(`${__dirname}/public/`)); // Permite acceder al html over
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-// app.use((req, res, next) => { // Se define un middleware global antes de los route handlers
-//     console.log("Hola desde el middleware");
-//     next();
-// })
+app.use(compression())
 
 
 app.use((req, res, next) => { // Se define un middleware para saber el horario del request

@@ -10,8 +10,8 @@ export const updateSettings = async(data, type) => { // type puede ser password 
 
         const url =
             type === 'password' ?
-            'http://localhost:3000/api/v1/users/updateMyPassword' :
-            'http://localhost:3000/api/v1/users/updateMe';
+            '/api/v1/users/updateMyPassword' :
+            '/api/v1/users/updateMe';
 
         const res = await axios({
             method: 'PATCH',
@@ -20,7 +20,7 @@ export const updateSettings = async(data, type) => { // type puede ser password 
         });
 
         if (res.data.status === 'success') {
-            console.log('datos modificados!')
+
             showAlert('success', `${type.toUpperCase()} modificados!`);
             window.setTimeout(() => {
                 location.reload(); // Recarga la pagina para que la foto se actualize en el momento
