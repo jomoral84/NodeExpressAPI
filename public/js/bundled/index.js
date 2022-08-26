@@ -458,10 +458,12 @@ function hmrAcceptRun(bundle, id) {
 /* eslint-disable */ var _polyfill = require("@babel/polyfill");
 var _mapbox = require("./mapbox");
 var _login = require("./login");
+var _signup = require("./signup");
 var _updateSettings = require("./updateSettings");
 var _stripe = require("./stripe");
 const mapBox = document.getElementById('map');
 const loginForm = document.querySelector('.form--login');
+const signupForm = document.querySelector('.form--signup');
 const logoutButton = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
@@ -480,6 +482,15 @@ if (loginForm) loginForm.addEventListener('submit', (e)=>{
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     _login.login(email, password);
+});
+if (signupForm) signupForm.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    console.log('Boton funciona');
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById('passwordconfirm').value;
+    _signup.signup(name, email, password, passwordConfirm);
 });
 if (logoutButton) logoutButton.addEventListener('click', _login.logout);
 if (userDataForm) userDataForm.addEventListener('submit', (e)=>{
@@ -508,7 +519,7 @@ if (userPasswordForm) userPasswordForm.addEventListener('submit', async (e)=>{
     document.getElementById('passwordConfirm').value = '';
 });
 
-},{"@babel/polyfill":"c41dc","./mapbox":"h65P9","./login":"apbKM","./updateSettings":"keNDf","./stripe":"ksRuO"}],"c41dc":[function(require,module,exports) {
+},{"@babel/polyfill":"c41dc","./mapbox":"h65P9","./login":"apbKM","./updateSettings":"keNDf","./stripe":"ksRuO","./signup":"hW8RO"}],"c41dc":[function(require,module,exports) {
 "use strict";
 require("./noConflict");
 var _global = _interopRequireDefault(require("core-js/library/fn/global"));
@@ -10926,6 +10937,38 @@ const bookTour = async (tourId)=>{
     } catch (err) {
         console.log(err);
         _alerts.showAlert('error', err);
+    }
+};
+
+},{"axios":"iYoWk","./alerts":"ImTlr","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"hW8RO":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "signup", ()=>signup
+);
+/* eslint-disable */ var _axios = require("axios");
+var _axiosDefault = parcelHelpers.interopDefault(_axios);
+var _alerts = require("./alerts");
+const signup = async (name, email, password, passwordConfirm)=>{
+    try {
+        const res = await _axiosDefault.default({
+            method: 'POST',
+            url: 'http://localhost:3000/api/v1/users/signup',
+            data: {
+                name,
+                email,
+                password,
+                passwordConfirm
+            }
+        });
+        if (res.data.status === 'success') {
+            _alerts.showAlert('success', 'Usuario creado!');
+            window.setTimeout(()=>{
+                location.assign('/me'); // Una vez creado envia al usuario a su cuenta
+            }, 1500);
+        }
+    } catch (err) {
+        _alerts.showAlert('error', err.response.data.message);
+        console.log(err.response.data.message);
     }
 };
 

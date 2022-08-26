@@ -60,7 +60,7 @@ exports.signup = async(req, res) => {
 
     const url = `http://localhost:3000/me`;
     console.log(url);
-    await new Email(newUser, url).sendWelcome(); // Envia mail al usuario de bienvenida
+    //  await new Email(newUser, url).sendWelcome(); // Envia mail al usuario de bienvenida
 
     const token = signToken(newUser._id);
 

@@ -1255,6 +1255,22 @@ body {
     border-radius: 5px;
 }
 
+.signup-form {
+    margin: 0 auto;
+    max-width: 55rem;
+    background-color: #fff;
+    -webkit-box-shadow: 0 2.5rem 8rem 2rem rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2.5rem 8rem 2rem rgba(0, 0, 0, 0.06);
+    padding: 5rem 7rem;
+    border-radius: 5px;
+}
+
+.signup-forgotpass {
+    margin-left: 100px;
+    color: #999;
+    font-size: 1.2rem;
+}
+
 .form__input {
     display: block;
     font-family: inherit;

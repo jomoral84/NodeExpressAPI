@@ -1,64 +1,23 @@
 /* eslint-disable */
 
-
-// ----------------------------------------------
-// Get locations from HTML
-// ----------------------------------------------
-
 const locations = JSON.parse(document.getElementById('map').dataset.locations);
 
-
-// ----------------------------------------------
-// Create the map and attach it to the #map
-// ----------------------------------------------
-
-const map = L.map('map').setView([51.505, -0.09], 13);
-
-// ----------------------------------------------
-// Add a tile layer to add to our map
-// ----------------------------------------------
+var map = L.map('map', { zoomControl: false });
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap'
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 }).addTo(map);
 
-// ----------------------------------------------
-// Create icon using the image provided by Jonas
-// ----------------------------------------------
-
-const greenIcon = L.icon({
-    iconUrl: '/img/pin.png',
-    iconSize: [32, 40], // size of the icon
-    iconAnchor: [16, 45], // point of the icon which will correspond to marker's location
-    popupAnchor: [0, -50], // point from which the popup should open relative to the iconAnchor
-});
-
-// ----------------------------------------------
-// Add locations to the map
-// ----------------------------------------------
-
 const points = [];
-locations.forEach(loc => {
-    // Create points
+locations.forEach((loc) => {
     points.push([loc.coordinates[1], loc.coordinates[0]]);
-
-    // Add markers
-    L.marker([loc.coordinates[1], loc.coordinates[0]], { icon: greenIcon })
+    L.marker([loc.coordinates[1], loc.coordinates[0]])
         .addTo(map)
-        // Add popup
-        .bindPopup(`<p>Day ${loc.day}: ${loc.description}</p>`, {
-            autoClose: false,
-        })
+        .bindPopup(`<p>Day ${loc.day}: ${loc.description}</p>`, { autoClose: false })
         .openPopup();
 });
-
-// ----------------------------------------------
-// Set map bounds to include current location
-// ----------------------------------------------
 
 const bounds = L.latLngBounds(points).pad(0.5);
 map.fitBounds(bounds);
 
-// Disable scroll on map
 map.scrollWheelZoom.disable();

@@ -76,7 +76,7 @@ exports.getLoginForm = async(req, res) => {
 
 exports.getSignUpForm = async(req, res) => {
 
-    res.status(200).render('signUp', {
+    res.status(200).render('signup', {
         title: 'Creacion de Cuenta'
     })
 }
