@@ -25,7 +25,8 @@ mongoose.connect(DB, { // Conexion a la base de MongoDB
 // START SERVER
 
 const port = process.env.PORT || 3000;
+const hostname = '0.0.0.0';
 
-app.listen(port, () => {
+app.listen(port, hostname, () => {
     console.log(`Servidor activo en el puerto: ${port}`);
 })
