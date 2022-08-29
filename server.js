@@ -9,8 +9,6 @@ const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSW
 
 mongoose.connect(DB, { // Conexion a la base de MongoDB
     useNewUrlParser: true,
-    //  useCreateIndex: true,
-    //  useFindAndModify: false,
     useUnifiedTopology: true
 
 }).then(() => {
