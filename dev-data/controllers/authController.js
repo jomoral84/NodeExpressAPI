@@ -55,7 +55,7 @@ exports.signup = async(req, res) => {
 
     // createSendToken(newUser, 201, res);
 
-    const url = `http://localhost:3000/me`;
+    const url = `${req.protocol}://${req.get('host')}/me`;
 
     //  await new Email(newUser, url).sendWelcome(); // Envia mail al usuario de bienvenida
 
