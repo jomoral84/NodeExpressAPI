@@ -25,10 +25,6 @@ exports.createSendToken = (user, statusCode, res) => {
         secure: req.secure || req.headers['x-forwarder-proto'] === 'https' // Testea si la conexion es segura o no cuando se deployea a Heroku
     }
 
-    if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
-
-
-
     res.cookie('jwt', token, cookieOptions);
 
     // Quita el password que aparece en postman
@@ -39,7 +35,7 @@ exports.createSendToken = (user, statusCode, res) => {
         status: 'success',
         token,
         data: {
-            user: user
+            user
         }
     });
 };
@@ -68,10 +64,9 @@ exports.signup = async(req, res) => {
     const cookieOptions = { // Almacena el JWT en una HHTP Only cookie
         expires: new Date(Date.now() + process.env.JWT_EXPIRES_COOKIE_IN * 24 * 60 * 60 * 1000),
         secure: false,
-        httpOnly: true
+        httpOnly: true,
+        secure: req.secure || req.headers['x-forwarder-proto'] === 'https' // Testea si la conexion es segura o no cuando se deployea a Heroku
     }
-
-    if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
     res.cookie('jwt', token, cookieOptions);
 
@@ -112,10 +107,9 @@ exports.login = catchAsync(async(req, res, next) => {
     const cookieOptions = { // Almacena el JWT en una HHTP Only cookie
         expires: new Date(Date.now() + process.env.JWT_EXPIRES_COOKIE_IN * 24 * 60 * 60 * 1000),
         secure: false,
-        httpOnly: true
+        httpOnly: true,
+        secure: req.secure || req.headers['x-forwarder-proto'] === 'https' // Testea si la conexion es segura o no cuando se deployea a Heroku
     }
-
-    if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
     res.cookie('jwt', token, cookieOptions);
 
@@ -316,9 +310,6 @@ exports.updatePassword = async(req, res, next) => {
     if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
         return next(new AppError('Password actual invalido!', 401));
     }
-
-
-
 
     // 3) Si es asi, actualizar el password
     user.password = req.body.password;
