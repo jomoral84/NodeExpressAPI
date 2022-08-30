@@ -458,7 +458,6 @@ function hmrAcceptRun(bundle, id) {
 /* eslint-disable */ var _polyfill = require("@babel/polyfill");
 var _mapbox = require("./mapbox");
 var _login = require("./login");
-var _signup = require("./signup");
 var _updateSettings = require("./updateSettings");
 var _stripe = require("./stripe");
 const mapBox = document.getElementById('map');
@@ -489,7 +488,7 @@ if (signupForm) signupForm.addEventListener('submit', (e)=>{
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const passwordConfirm = document.getElementById('passwordconfirm').value;
-    _signup.signup(name, email, password, passwordConfirm);
+    _login.signup(name, email, password, passwordConfirm);
 });
 if (logoutButton) logoutButton.addEventListener('click', _login.logout);
 if (userDataForm) userDataForm.addEventListener('submit', (e)=>{
@@ -517,7 +516,7 @@ if (userPasswordForm) userPasswordForm.addEventListener('submit', async (e)=>{
     document.getElementById('passwordConfirm').value = '';
 });
 
-},{"@babel/polyfill":"c41dc","./mapbox":"h65P9","./login":"apbKM","./signup":"hW8RO","./updateSettings":"keNDf","./stripe":"ksRuO"}],"c41dc":[function(require,module,exports) {
+},{"@babel/polyfill":"c41dc","./mapbox":"h65P9","./login":"apbKM","./updateSettings":"keNDf","./stripe":"ksRuO"}],"c41dc":[function(require,module,exports) {
 "use strict";
 require("./noConflict");
 var _global = _interopRequireDefault(require("core-js/library/fn/global"));
@@ -7645,6 +7644,8 @@ parcelHelpers.export(exports, "login", ()=>login
 );
 parcelHelpers.export(exports, "logout", ()=>logout
 );
+parcelHelpers.export(exports, "signup", ()=>signup
+);
 /* eslint-disable */ var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _alerts = require("./alerts");
@@ -7659,7 +7660,7 @@ const login = async (email, password)=>{
             }
         });
         if (res.data.status === 'success') {
-            _alerts.showAlert('success', 'Usuario correcto!');
+            _alerts.showAlert('success', 'Bienvenido!');
             window.setTimeout(()=>{
                 location.assign('/'); // Una vez logeado envia al usuario a la homepage
             }, 1500);
@@ -7674,10 +7675,32 @@ const logout = async ()=>{
             method: 'GET',
             url: '/api/v1/users/logout'
         });
-        if (res.data.status === 'success') location.reload(true);
+        if (res.data.status === 'success') location.assign('/');
     } catch (err) {
         console.log(err.response);
         _alerts.showAlert('error', 'Error al deslogearse');
+    }
+};
+const signup = async (name, email, password, passwordConfirm)=>{
+    try {
+        const res = await _axiosDefault.default({
+            method: 'POST',
+            url: '/api/v1/users/signup',
+            data: {
+                name,
+                email,
+                password,
+                passwordConfirm
+            }
+        });
+        if (res.data.status === 'success') {
+            _alerts.showAlert('success', 'Registro Exitoso!');
+            window.setImmediate(()=>{
+                location.assign('/me');
+            }, 1500);
+        }
+    } catch (err) {
+        _alerts.showAlert('error', err.response.data.message);
     }
 };
 
@@ -10885,38 +10908,7 @@ const showAlert = (type, msg)=>{
     window.setTimeout(hideAlert, 3000);
 };
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"hW8RO":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "signup", ()=>signup
-);
-/* eslint-disable */ var _axios = require("axios");
-var _axiosDefault = parcelHelpers.interopDefault(_axios);
-var _alerts = require("./alerts");
-const signup = async (name, email, password, passwordConfirm)=>{
-    try {
-        const res = await _axiosDefault.default({
-            method: 'POST',
-            url: '/api/v1/users/signup',
-            data: {
-                name,
-                email,
-                password,
-                passwordConfirm
-            }
-        });
-        if (res.data.status === 'success') {
-            _alerts.showAlert('success', 'Usuario creado!');
-            window.setTimeout(()=>{
-                location.assign('/me'); // Una vez creado envia al usuario a su cuenta
-            }, 1500);
-        }
-    } catch (err) {
-        _alerts.showAlert('error', err.response.data.message);
-    }
-};
-
-},{"axios":"iYoWk","./alerts":"ImTlr","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"keNDf":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"keNDf":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "updateSettings", ()=>updateSettings

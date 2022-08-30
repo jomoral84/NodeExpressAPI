@@ -15,7 +15,7 @@ export const login = async(email, password) => {
         });
 
         if (res.data.status === 'success') {
-            showAlert('success', 'Usuario correcto!');
+            showAlert('success', 'Bienvenido!');
             window.setTimeout(() => {
                 location.assign('/'); // Una vez logeado envia al usuario a la homepage
             }, 1500);
@@ -35,10 +35,39 @@ export const logout = async() => {
             url: '/api/v1/users/logout'
         });
 
-        if ((res.data.status === 'success')) location.reload(true);
+
+        if (res.data.status === 'success') {
+            location.assign('/');
+        }
 
     } catch (err) {
         console.log(err.response);
         showAlert('error', 'Error al deslogearse');
     }
 }
+
+
+
+export const signup = async(name, email, password, passwordConfirm) => {
+    try {
+        const res = await axios({
+            method: 'POST',
+            url: '/api/v1/users/signup',
+            data: {
+                name,
+                email,
+                password,
+                passwordConfirm,
+            },
+        });
+
+        if (res.data.status === 'success') {
+            showAlert('success', 'Registro Exitoso!');
+            window.setImmediate(() => {
+                location.assign('/me');
+            }, 1500);
+        }
+    } catch (err) {
+        showAlert('error', err.response.data.message);
+    }
+};

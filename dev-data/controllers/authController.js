@@ -44,19 +44,19 @@ exports.createSendToken = (user, statusCode, res) => {
 
 
 exports.signup = async(req, res) => {
-    const newUser = await User.create(req.body);
-    // name: req.body.name,
-    // email: req.body.email,
-    // password: req.body.password,
-    // passwordConfirm: req.body.passwordConfirm,
-    // passwordChangeAt: req.body.passwordChangeAt,
-    // role: req.body.role
+
+
+    const newUser = await User.create({
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password,
+        passwordConfirm: req.body.passwordConfirm,
+    });
 
 
     // createSendToken(newUser, 201, res);
 
-    const url = `${req.protocol}://${req.get('host')}/me`;
-
+    //  const url = `${req.protocol}://${req.get('host')}/me`;
     //  await new Email(newUser, url).sendWelcome(); // Envia mail al usuario de bienvenida
 
     const token = signToken(newUser._id);
