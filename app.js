@@ -9,6 +9,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const csp = require('express-csp');
 const compression = require('compression');
+const cors = require('cors');
 
 
 
@@ -46,6 +47,10 @@ const limiter = rateLimit({ // Delimitador de intentos de logeo a 10
 })
 
 app.use('/api', limiter);
+
+app.use(cors()); // Activa el Cross-Origin Resource Sharing
+
+app.options('*', cors());
 
 app.use(
     helmet({

@@ -22,7 +22,7 @@ exports.createSendToken = (user, statusCode, res) => {
         expires: new Date(Date.now() + process.env.JWT_EXPIRES_COOKIE_IN * 24 * 60 * 60 * 1000),
         secure: false,
         httpOnly: true,
-        secure: req.secure || req.headers['x-forwarder-proto'] === 'https' // Testea si la conexion es segura o no cuando se deplyea a Heroku
+        secure: req.secure || req.headers['x-forwarder-proto'] === 'https' // Testea si la conexion es segura o no cuando se deployea a Heroku
     }
 
     if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
