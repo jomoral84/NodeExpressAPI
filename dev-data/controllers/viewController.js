@@ -63,19 +63,19 @@ exports.getOneTourById = async(req, res) => {
 }
 
 
-exports.getLoginForm = async(req, res) => {
+exports.getLoginForm = catchAsync(async(req, res) => {
 
     res.status(200).render('login', {
         title: 'Ingrese su usuario'
     })
-}
+})
 
-exports.getSignUpForm = async(req, res) => {
+exports.getSignUpForm = catchAsync(async(req, res) => {
 
-    res.status(200).render('signup', {
+    res.status(201).render('signup', {
         title: 'Creacion de Cuenta'
     })
-}
+})
 
 
 exports.getAccount = async(req, res) => {
