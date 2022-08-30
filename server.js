@@ -5,6 +5,7 @@ dotenv.config({ path: './config.env' }); // Lee las variables de entorno del arc
 const app = require('./app');
 
 
+
 const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
 
 mongoose.connect(DB, { // Conexion a la base de MongoDB
@@ -25,6 +26,14 @@ mongoose.connect(DB, { // Conexion a la base de MongoDB
 const port = process.env.PORT || 3000;
 const hostname = '0.0.0.0';
 
-app.listen(port, hostname, () => {
+const server = app.listen(port, hostname, () => {
     console.log(`Servidor activo en el puerto: ${port}`);
+})
+
+
+process.on('SIGTERM', () => {
+    console.log('SIGTERM Recibido. Shutting down');
+    server.close(() => {
+        console.log('Proceso Terminado');
+    });
 })
