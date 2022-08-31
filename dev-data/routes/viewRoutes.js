@@ -5,15 +5,6 @@ const bookingController = require('../controllers/bookingController');
 
 const router = express.Router();
 
-router.get('/pruebapug', (req, res) => { // Prueba template PUG
-    res.status(200).render('base', {
-        tour: 'Las minas de San Ignacio',
-        user: 'Beto',
-        price: 200
-    });
-})
-
-
 router.get('/', bookingController.createBookingCheckout, authController.isLoggedIn, viewController.getOverview);
 router.get('/tour/:slug', authController.isLoggedIn, viewController.getTour);
 
