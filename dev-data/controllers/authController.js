@@ -14,13 +14,12 @@ const signToken = id => {
 };
 
 
-exports.createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, req, res) => {
 
     const token = signToken(user._id);
 
     const cookieOptions = { // Almacena el JWT en una HHTP Only cookie
         expires: new Date(Date.now() + process.env.JWT_EXPIRES_COOKIE_IN * 24 * 60 * 60 * 1000),
-        secure: false,
         httpOnly: true,
         secure: req.secure || req.headers['x-forwarder-proto'] === 'https' // Testea si la conexion es segura o no cuando se deployea a Heroku
     }
@@ -54,31 +53,11 @@ exports.signup = async(req, res) => {
     });
 
 
-    // createSendToken(newUser, 201, res);
 
-    //  const url = `${req.protocol}://${req.get('host')}/me`;
-    //  await new Email(newUser, url).sendWelcome(); // Envia mail al usuario de bienvenida
+    createSendToken(newUser, 201, req, res);
 
-    const token = signToken(newUser._id);
-
-    const cookieOptions = { // Almacena el JWT en una HHTP Only cookie
-        expires: new Date(Date.now() + process.env.JWT_EXPIRES_COOKIE_IN * 24 * 60 * 60 * 1000),
-        httpOnly: true,
-        secure: req.secure || req.headers['x-forwarder-proto'] === 'https' // Testea si la conexion es segura o no cuando se deployea a Heroku
-    }
-
-    res.cookie('jwt', token, cookieOptions);
-
-    // Quita el password que aparece en postman
-    newUser.password = undefined;
-
-    res.status(201).json({
-        status: 'success',
-        token,
-        data: {
-            user: newUser
-        }
-    })
+    const url = `${req.protocol}://${req.get('host')}/me`;
+    await new Email(newUser, url).sendWelcome(); // Envia mail al usuario de bienvenida
 
 }
 
@@ -101,28 +80,10 @@ exports.login = catchAsync(async(req, res, next) => {
 
     // 3) Si la verificacion es ok se manda el token al cliente
 
-    const token = signToken(user._id);
-
-    const cookieOptions = { // Almacena el JWT en una HHTP Only cookie
-        expires: new Date(Date.now() + process.env.JWT_EXPIRES_COOKIE_IN * 24 * 60 * 60 * 1000),
-        httpOnly: true,
-        secure: req.secure || req.headers['x-forwarder-proto'] === 'https' // Testea si la conexion es segura o no cuando se deployea a Heroku
-    }
-
-    res.cookie('jwt', token, cookieOptions);
+    createSendToken(user, 200, req, res);
 
 
-    // Quita el password que aparece en postman
-    user.password = undefined;
-
-    res.status(201).json({
-        status: 'success',
-        token,
-        data: {
-            user: user
-        }
-    })
-})
+});
 
 
 exports.logout = (req, res) => {
@@ -151,7 +112,7 @@ exports.protect = catchAsync(async(req, res, next) => {
     }
 
     if (!token) {
-        return next(new AppError('You are not logged in! Please log in to get access.', 401));
+        return next(new AppError('No estas logeado! Por favor ingrese primero.', 401));
     }
 
 
@@ -283,17 +244,7 @@ exports.resetPassword = async(req, res, next) => {
     // 3) Update changedPasswordAt
 
     // 4) Logear al usuario, enviar el JWT
-    // createSendToken(user, 200, res);
-
-    const token = signToken(user._id);
-
-    res.status(200).json({
-        status: 'success',
-        token,
-        data: {
-            user
-        }
-    })
+    createSendToken(user, 200, req, res);
 
 
 }
@@ -317,14 +268,5 @@ exports.updatePassword = async(req, res, next) => {
     // 4) Logear al usuario, enviar el JWT
     //  createSendToken(user, 200, res);
 
-    const token = signToken(user._id);
-
-    res.status(200).json({
-        status: 'success',
-        token,
-        data: {
-            user
-        }
-    })
-
+    createSendToken(user, 200, req, res);
 }

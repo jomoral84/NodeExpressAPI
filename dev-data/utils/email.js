@@ -41,20 +41,22 @@ module.exports = class Email {
     async send(template, subject) { // Envia el mail actual
 
         // 1) Render pug
-        const html = pug.renderFile(`C:/Users/Administrador/Desktop/Programming/NodeJs Udemy/4-natours/starter/views/email/${template}.pug`, {
-            firstName: this.firstName,
-            url: this.url,
-            subject
-        });
+        const html = pug.renderFile(
+            `${__dirname}/../views/emails/${template}.pug`, {
+                firstName: this.firstName,
+                url: this.url,
+                subject,
+            }
+        );
 
         // 2) Definir las opciones del email
         const mailOptions = {
             from: this.from,
             to: this.to,
             subject,
-            html
-            //  text: htmlToText.fromString(html)
-        }
+            html,
+            text: htmlToText(html),
+        };
 
         await this.newTransport().sendMail(mailOptions);
 

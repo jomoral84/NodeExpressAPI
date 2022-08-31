@@ -27,6 +27,7 @@ const globalErrorHandler = require('./dev-data/controllers/errorController');
 
 const app = express();
 
+app.enable('trust proxy');
 
 app.set('view engine', 'pug'); // Motor de plantillas usado: PUG
 //app.set('view engine', 'ejs');
@@ -48,7 +49,7 @@ const limiter = rateLimit({ // Delimitador de intentos de logeo a 10
 
 app.use('/api', limiter);
 
-app.use(cors()); // Activa el Cross-Origin Resource Sharing
+app.use(cors()); // Cross-Origin Resource Sharing
 
 app.options('*', cors());
 
