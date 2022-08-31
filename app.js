@@ -11,12 +11,7 @@ const csp = require('express-csp');
 const compression = require('compression');
 const cors = require('cors');
 
-
-
 const errorController = require('./dev-data/controllers/errorController');
-
-
-
 const tourRouter = require('./dev-data/routes/tourRoutes');
 const userRouter = require('./dev-data/routes/userRoutes');
 const viewRouter = require('./dev-data/routes/viewRoutes');
@@ -26,8 +21,6 @@ const globalErrorHandler = require('./dev-data/controllers/errorController');
 
 
 const app = express();
-
-app.enable('trust proxy');
 
 app.set('view engine', 'pug'); // Motor de plantillas usado: PUG
 //app.set('view engine', 'ejs');
@@ -53,11 +46,7 @@ app.use(cors()); // Cross-Origin Resource Sharing
 
 app.options('*', cors());
 
-app.use(
-    helmet({
-        crossOriginEmbedderPolicy: false,
-    })
-);
+app.use(helmet({ crossOriginEmbedderPolicy: false }));
 
 // Further HELMET configuration for Security Policy (CSP)
 const scriptSrcUrls = [
@@ -119,7 +108,6 @@ app.use(hpp({
 }));
 
 
-
 app.use(express.json({ limit: '10kb' })); // Middleware
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(cookieParser()); // Parse Cookie header and populate req.cookies with an object keyed by the cookie names
@@ -127,9 +115,7 @@ app.use(cookieParser()); // Parse Cookie header and populate req.cookies with an
 app.use(express.static(`${__dirname}/public/`)); // Permite acceder al html overview y tour
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 app.use(compression())
-
 
 app.use((req, res, next) => { // Se define un middleware para saber el horario del request
     req.requestTime = new Date().toISOString();
@@ -138,15 +124,13 @@ app.use((req, res, next) => { // Se define un middleware para saber el horario d
 })
 
 
-
 // MAIN ROUTERS
 
 app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
-//app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/bookings', bookingRouter);
-
+//app.use('/api/v1/reviews', reviewRouter);
 
 
 app.all('*', (req, res, next) => { // Middleware que maneja el error de ruta
