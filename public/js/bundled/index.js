@@ -10944,7 +10944,7 @@ parcelHelpers.export(exports, "bookTour", ()=>bookTour
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _alerts = require("./alerts");
 const bookTour = async (tourId)=>{
-    const stripe = Stripe('pk_test_51LZcf0EbdxPYBJYMZfhmhxNJ2TkQMiUTMPXFAB4qcblxupFfsBC6bWQnmiT8eXMBCOHWbZ4ELYavsjNfnjJ1NPM900YwowhIDk'); // API Test Key de Stripe
+    const stripe = Stripe('pk_test_51LZcf0EbdxPYBJYMS4T42HbpkKbnLhNovOQmpP7nDYpoA7tL36sMiYr5T37PflJSAgJ7RIxkDjjlN7JorKCBPYOr00dlQsZmdq'); // API Test Key de Stripe
     try {
         // 1) Get checkout session from API
         const session = await _axiosDefault.default(`/api/v1/bookings/checkout-session/${tourId}`);
@@ -10952,7 +10952,6 @@ const bookTour = async (tourId)=>{
         await stripe.redirectToCheckout({
             sessionId: session.data.session.id
         });
-    //   window.location.replace(session.data.session.url);
     } catch (err) {
         console.log(err);
         _alerts.showAlert('error', err);

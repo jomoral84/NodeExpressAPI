@@ -61,10 +61,6 @@ exports.createBookingCheckout = async(req, res, next) => {
 
 
 // exports.createBooking = factory.createOne(Booking);
-
-
-
-
 // exports.getOneBooking = factory.getOne(Booking);
 // exports.getAllBooking = factory.getAll(Booking);
 // exports.updateBooking = factory.updateOne(Booking);

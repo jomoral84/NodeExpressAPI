@@ -29,9 +29,6 @@ exports.getTour = async(req, res) => {
         field: 'reviews rating user'
     });
 
-    if (!tour) {
-        return (new AppError('No existe Tour con ese nombre', 404));
-    }
 
     res.status(200).set(
         'Content-Security-Policy',
