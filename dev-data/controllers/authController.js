@@ -56,8 +56,8 @@ exports.signup = async(req, res) => {
 
     createSendToken(newUser, 201, req, res);
 
-    // const url = `${req.protocol}://${req.get('host')}/me`;
-    // await new Email(newUser, url).sendWelcome(); // Envia mail al usuario de bienvenida
+    const url = `${req.protocol}://${req.get('host')}/me`;
+    await new Email(newUser, url).sendWelcome(); // Envia mail al usuario de bienvenida
 
 }
 

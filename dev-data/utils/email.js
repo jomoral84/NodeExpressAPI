@@ -42,7 +42,7 @@ module.exports = class Email {
 
         // 1) Render pug
         const html = pug.renderFile(
-            `${__dirname}/../views/emails/${template}.pug`, {
+            `C:/Users/Administrador/Desktop/Programming/NodeJs Udemy/4-natours/NodeExpressAPI/views/email/${template}.pug`, {
                 firstName: this.firstName,
                 url: this.url,
                 subject,
