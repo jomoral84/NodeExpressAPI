@@ -20,7 +20,7 @@ exports.getOverview = async(req, res) => {
 }
 
 
-exports.getTour = async(req, res) => {
+exports.getTour = catchAsync(async(req, res, next) => {
 
     // 1) Get the data, for the requested tour (including reviews and guides)
 
@@ -29,25 +29,29 @@ exports.getTour = async(req, res) => {
         field: 'reviews rating user'
     });
 
+    if (!tour) {
+        //  return next(new AppError('No existe tour con ese nombre...', 404));
+        return res.status(500).render('error', {
+            title: 'Hubo un error!',
+            msg: 'No existe tour con ese nombre!',
+        });
+
+    }
 
     res.status(200).set(
         'Content-Security-Policy',
         "default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;"
     ).render('tour', {
-        title: 'Tour',
+        title: tour.name,
         tour
     });
 
-}
+})
 
 
 exports.getOneTourById = async(req, res) => {
 
     const tour = await Tour.findById({ _id: req.params.id });
-
-    if (!tour) {
-        return (new AppError('No existe Tour con ese nombre', 404));
-    }
 
     res.status(200).render('tour', {
         title: `${tour.name} Tour`,
