@@ -11,7 +11,10 @@ module.exports = class Email {
         this.to = user.email;
         this.firstName = user.name.split(' ')[0];
         this.url = url;
-        this.from = `Natours Support <${process.env.EMAIL_FROM}>`;
+        this.from =
+            process.env.NODE_ENV === 'production' ?
+            `Natours Support <${process.env.SENDGRID_EMAIL_FROM}>` :
+            `Natours Support <${process.env.EMAIL_FROM}>`
 
     }
 
