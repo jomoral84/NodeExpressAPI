@@ -7,6 +7,13 @@ const AppError = require('../utils/appError');
 const Booking = require('../models/bookingModel');
 
 
+exports.alerts = (req, res, next) => {
+    const { alert } = req.query;
+
+    if (alert === 'booking')
+        res.locals.alert = `Your booking was successful! Please check your email for a confirmation. If your booking doesn't show up here immediately, please come back later.`;
+    next();
+};
 
 exports.getOverview = async(req, res) => {
 
@@ -30,7 +37,7 @@ exports.getTour = catchAsync(async(req, res, next) => {
     });
 
     if (!tour) {
-        //  return next(new AppError('No existe tour con ese nombre...', 404));
+        //     return next(new AppError('No existe tour con ese nombre...', 404));
         return res.status(500).render('error', {
             title: 'Hubo un error!',
             msg: 'No existe tour con ese nombre!',
@@ -70,7 +77,7 @@ exports.getLoginForm = catchAsync(async(req, res) => {
 
 exports.getSignUpForm = catchAsync(async(req, res) => {
 
-    res.status(201).render('signup', {
+    res.status(200).render('signup', {
         title: 'Creacion de Cuenta'
     })
 })
